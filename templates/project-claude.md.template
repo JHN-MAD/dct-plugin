@@ -1,0 +1,55 @@
+# [프로젝트명] - Claude Code 설정
+
+## 프로젝트 정보
+
+- **설명**: [프로젝트 한줄 설명]
+- **언어**: TypeScript / Python
+- **프레임워크**: [Next.js / FastAPI / etc.]
+
+## Tech Stack
+
+<!-- 프로젝트에 해당하는 것만 남기세요 -->
+- **Frontend**: Next.js (App Router), React, TypeScript, Tailwind CSS
+- **Backend**: Python (FastAPI)
+- **DB/ORM**: PostgreSQL, Prisma
+- **Infra**: Docker, AWS
+- **Package**: npm
+
+## 코딩 컨벤션
+
+- 변수/함수: camelCase (TS), snake_case (Python)
+- 컴포넌트: PascalCase
+- 파일명: kebab-case
+- 커밋 메시지: [conventional commits](https://www.conventionalcommits.org/)
+
+## 프로젝트 구조
+
+<!-- 주요 디렉토리 구조를 설명하세요 -->
+```
+src/
+├── app/          # Next.js App Router pages
+├── components/   # React components
+├── lib/          # Utility functions
+└── api/          # API routes
+```
+
+## Jira / Confluence
+
+- **Jira 프로젝트 키**: DCTC
+- **Confluence 스페이스**: DCT
+- 작업 시 관련 Jira 이슈 확인/참조 필수
+
+## 빌드 & 테스트
+
+```bash
+npm run dev      # 개발 서버
+npm run build    # 프로덕션 빌드
+npm test         # 테스트 실행
+npm run lint     # 린트
+```
+
+## 주의사항
+
+<!-- 프로젝트 특이사항을 적으세요 -->
+- [예: 특정 환경변수 필요]
+- [예: 특정 API 키 설정 필요]
