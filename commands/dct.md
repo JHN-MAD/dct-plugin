@@ -21,24 +21,26 @@ description: 데이터 컨설팅 팀(DCT) Claude Code 온보딩 — MCP 셋업, 
 
 사용자가 "작성 완료" 라고 알리면 다음 단계로.
 
-### 2. `settings-example.json` → `~/.claude/settings.json` 병합 반영
-사용자가 채운 `settings-example.json` 의 `mcpServers.mcp-atlassian` 객체를 기존 `~/.claude/settings.json` 에 **병합**한다.
+### 2. `settings-example.json` → `~/.claude.json` 병합 반영
+사용자가 채운 `settings-example.json` 의 `mcpServers.mcp-atlassian` 객체를 **`~/.claude.json`** 에 병합한다.
 
-1. 기존 `~/.claude/settings.json` 존재 여부 확인
-   - **존재**: `cp ~/.claude/settings.json ~/.claude/settings.json.bak-$(date +%Y%m%d-%H%M%S)` 로 백업. **절대 `Write` 로 통째 덮어쓰지 말 것** (하단 "절대 규칙" 참조)
-   - **없음**: `echo '{}' > ~/.claude/settings.json` 로 빈 객체 초기화 후 아래 병합 진행
+> **⚠️ 중요 — 대상 파일**: Claude Code 의 MCP 레지스트리는 `~/.claude.json` 이다 (`claude mcp list` 가 읽는 파일). `~/.claude/settings.json` 은 훅/권한/테마용이며 `mcpServers` 를 넣어도 무시될 수 있다. **반드시 `~/.claude.json` 을 타겟으로 할 것.**
+
+1. 기존 `~/.claude.json` 존재 여부 확인
+   - **존재**: `cp ~/.claude.json ~/.claude.json.bak-$(date +%Y%m%d-%H%M%S)` 로 백업. **절대 `Write` 로 통째 덮어쓰지 말 것** (하단 "절대 규칙" 참조). 이 파일에는 Claude Code 의 프로젝트별 히스토리, OAuth 토큰, 플러그인 메타 등 수십 개 최상위 키가 있어 손상 시 복구 불가능
+   - **없음**: `echo '{}' > ~/.claude.json` 로 빈 객체 초기화 후 아래 병합 진행
 2. `settings-example.json` 에서 Atlassian 플레이스홀더(`YOUR_..._HERE`, `your-email@example.com` 등)가 남아있는지 검증 — 남아있으면 중단하고 사용자에게 재편집 요청
 3. **병합 방식으로 반영** (`jq` 사용):
    ```bash
    jq --slurpfile src <(jq '.mcpServers["mcp-atlassian"]' settings-example.json) \
       'if .mcpServers then . else . + {mcpServers: {}} end
        | .mcpServers["mcp-atlassian"] = $src[0]' \
-      ~/.claude/settings.json > ~/.claude/settings.json.tmp \
-      && mv ~/.claude/settings.json.tmp ~/.claude/settings.json
+      ~/.claude.json > ~/.claude.json.tmp \
+      && mv ~/.claude.json.tmp ~/.claude.json
    ```
-   - `mcp-atlassian` 키만 추가/갱신. `hooks`, `statusLine`, `enabledPlugins` 등 다른 키는 반드시 보존
+   - `mcp-atlassian` 키만 추가/갱신. `projects`, `oauthAccount`, `installedPlugins` 등 다른 키는 반드시 보존
    - `mcpServers` 키 자체가 없던 파일에도 대응 (위 jq 표현식의 if 분기)
-4. 검증: `jq '.mcpServers | keys' ~/.claude/settings.json` 으로 `mcp-atlassian` 키 존재 확인 (값은 출력하지 말 것)
+4. 검증: `jq '.mcpServers | keys' ~/.claude.json` 으로 `mcp-atlassian` 키 존재 확인 (값은 출력하지 말 것)
 5. **작업 종료 후 반드시 `git checkout settings-example.json`** 으로 리포 파일을 플레이스홀더 버전으로 되돌림 — 실수 커밋 방지
 
 ### 3. GitHub SSH 키 생성 및 등록 (조건부)
@@ -78,33 +80,10 @@ gh auth login
 - **`~/.claude/rules/` 디렉터리 없음** → 플러그인 `rules/*.md` 전체 복사
 - **`~/.claude/rules/` 존재** → 파일별로 검사, **없는 파일만** 추가 복사. 기존 파일은 **덮어쓰지 않음**
 
-### 6. Slack MCP (선택)
-팀 Slack(`madupteam.slack.com`) DM, 채널 조회, 메시지 전송이 필요한 경우만 진행. 필요 없으면 7단계로.
+### 6. AWS CLI (선택, Slack MCP 전제 조건)
+AWS 리소스 접근이 필요하거나 **7단계 Slack MCP 를 쓸 계획이면 필수**. Slack 봇 토큰을 AWS Secrets Manager 에서 가져오기 때문.
 
-- `korotovsky/slack-mcp-server` 사용 (브라우저 세션 토큰 기반, 별도 Slack App 등록 불필요)
-- **토큰 추출**:
-  1. `madupteam.slack.com` 브라우저 로그인 상태에서 개발자 도구 열기
-  2. Application → Local Storage → `localConfig_v2` 에서 `xoxc-...` 추출
-  3. Application → Cookies → `d` 값이 `xoxd-...`
-- `settings-example.json` 의 `slack` 섹션에 입력:
-  - `SLACK_MCP_XOXC_TOKEN`, `SLACK_MCP_XOXD_TOKEN`
-  - `SLACK_MCP_ADD_MESSAGE_TOOL`:
-    - `false` (기본, 전송 비활성화 — 읽기만 허용) ✅ 권장
-    - `C01234ABCD,C05678EFGH` (허용 채널 ID 화이트리스트)
-    - `true` (전 채널 전송 허용, ⚠️ 위험)
-  - 채널 ID 찾는 법: Slack 웹에서 채널 우클릭 → "채널 상세정보" 하단, 또는 URL 끝부분
-- `jq` 로 `mcpServers.slack` 키만 병합 (Atlassian 과 동일한 패턴):
-  ```bash
-  jq --slurpfile src <(jq '.mcpServers.slack' settings-example.json) \
-     '.mcpServers.slack = $src[0]' \
-     ~/.claude/settings.json > ~/.claude/settings.json.tmp \
-     && mv ~/.claude/settings.json.tmp ~/.claude/settings.json
-  ```
-- **주의**: 토큰은 본인 Slack 세션 기반. 로그아웃/장기 미접속 시 만료되면 재발급 필요 (수개월에 한 번 정도)
-- **보안**: Slack ToS 회색 지대이므로 팀 정책 확인 후 사용
-
-### 7. AWS CLI (선택)
-AWS 리소스 접근이 필요한 경우만. MCP 는 설치하지 않고 CLI 만 설정 — Claude 가 `Bash` 로 `aws` 명령을 직접 호출하는 것만으로 충분하며, MCP 래퍼는 컨텍스트만 소비한다.
+MCP 는 설치하지 않고 CLI 만 설정 — Claude 가 `Bash` 로 `aws` 직접 호출하는 것만으로 충분하다.
 
 1. AWS CLI 설치 확인:
    ```bash
@@ -126,15 +105,54 @@ AWS 리소스 접근이 필요한 경우만. MCP 는 설치하지 않고 CLI 만
 
 > **보안**: Access Key 는 `~/.aws/credentials` 에만 두고 `Read` 로 출력하지 말 것. 검증은 `aws configure list` 로 (실제 키 값은 마스킹 출력됨).
 
+### 7. Slack MCP (선택)
+팀 Slack(`madupteam.slack.com`) 봇 `@매도비` 를 통해 DM, 채널 메시지 전송이 필요한 경우만. 공식 `@modelcontextprotocol/server-slack` 서버 + **AWS Secrets Manager 의 `prod/gen-ai/slack` 에 저장된 봇 토큰** 사용.
+
+**전제 조건**:
+- 6단계 AWS CLI 설정 완료
+- IAM 권한: `secretsmanager:GetSecretValue` on `prod/gen-ai/slack` (없으면 권한 담당자에게 요청)
+
+**동작 방식**:
+1. 온보딩 시 1회 `aws secretsmanager get-secret-value` 로 토큰 fetch
+2. `~/.claude.json` 의 `mcpServers.slack.env.SLACK_BOT_TOKEN` 에 저장
+3. 이후 세션은 파일에 저장된 토큰 사용 (매 세션 AWS 호출 X)
+4. 토큰 로테이션 시 `/dct-refresh-slack` 로 갱신
+
+**실행**:
+```bash
+bash ~/.claude/plugins/cache/dct-marketplace/dct-claude-plugin/0.1.0/scripts/refresh-slack-token.sh
+```
+스크립트가 수행하는 작업:
+- 권한 검증 (`aws sts get-caller-identity`)
+- Secrets Manager 에서 `SLACK_TOKEN` fetch
+- `~/.claude.json` 백업 후 `jq` 로 `mcpServers.slack` 키만 병합
+- `SLACK_TEAM_ID=T5D95TP5Z` 함께 설정
+- 검증 출력
+
+**중요 — `~/.claude.json` vs `~/.claude/settings.json`**:
+- `~/.claude.json` ⭐ — Claude Code 의 **실제 MCP 레지스트리** (`claude mcp list` 가 읽는 곳). Slack MCP 는 이 파일에 등록해야 한다
+- `~/.claude/settings.json` — 훅, 권한, 테마 등. `mcpServers` 키가 있어도 Claude Code 는 무시할 수 있음 (환경에 따라)
+- 둘 다 **jq 로 특정 키만 병합** 해야 하며, 통째 덮어쓰기 금지 (절대 규칙)
+
+**봇 권한 확인**:
+- 봇 이름: `@매도비` (app_id: `A069U5ZRHR7`, bot user: `U06AHN2ALJW`)
+- Token Scopes: `chat:write`, `im:write` 필수
+- Private 채널에 메시지 보내려면 해당 채널에서 `/invite @매도비` 먼저 실행
+
 ### 8. 최종 점검
-- `jq '.mcpServers | keys' ~/.claude/settings.json` 로 등록된 MCP 키 확인 (값 출력 금지)
-- `mcp-atlassian` 연결 확인 (예: `mcp__mcp-atlassian__jira_get_user_profile`)
-- (Slack 설정 시) `slack` 연결 확인
+- `claude mcp list` 로 MCP 연결 상태 확인 (값은 출력되지 않음)
+  - `mcp-atlassian: ✓ Connected` 필수
+  - (Slack 설정 시) `slack: ✓ Connected`
+- `jq '.mcpServers | keys' ~/.claude.json` 로 등록된 MCP 키 확인 (값 출력 금지)
+- `mcp-atlassian` 도구 호출 테스트 (예: `mcp__mcp-atlassian__jira_get_user_profile`)
 - `gh auth status` 로 GitHub 인증 확인 (`Git operations protocol: ssh`)
 - (AWS 설정 시) `aws sts get-caller-identity` 로 인증 확인
+- (Slack 설정 시) `/dct-slack U<본인ID> 온보딩 테스트` 로 DM 스모크 테스트
 - `~/.claude/CLAUDE.md` 와 `~/.claude/rules/` 존재 확인
-- 백업 파일 위치 안내 (복원 필요 시 `cp ~/.claude/settings.json.bak-<timestamp> ~/.claude/settings.json`)
-- 다음 커맨드 안내: `/dct-job DCTC-1234 feat "작업 설명"`
+- 백업 파일 위치 안내 (복원 필요 시):
+  - `cp ~/.claude.json.bak-<timestamp> ~/.claude.json`
+  - `cp ~/.claude/settings.json.bak-<timestamp> ~/.claude/settings.json`
+- 다음 커맨드 안내: `/dct-plan DCTC-1234 "작업 설명"` (또는 `/dct-job` 완전 자동화)
 
 ## 주의사항
 

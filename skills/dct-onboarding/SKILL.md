@@ -9,7 +9,7 @@ description: 데이터 컨설팅 팀(DCT) Claude Code 신규 셋업 가이드. A
 
 ## 설계 원칙
 
-- **Claude 는 토큰 값을 직접 보지 않는다** — 사용자가 리포의 `settings-example.json` 을 에디터로 직접 편집 → 완료 후 `jq` 로 `~/.claude/settings.json` 에 병합
+- **Claude 는 토큰 값을 직접 보지 않는다** — 사용자가 리포의 `settings-example.json` 을 에디터로 직접 편집 → 완료 후 `jq` 로 `~/.claude.json` 에 병합
 - **기존 파일 통째 덮어쓰기 절대 금지** — 백업 후 `jq` 병합, 또는 신규 생성 시에만 Write 허용
 - **이미 설정된 항목은 건너뛴다** — 기존 SSH 키, `gh` 로그인, CLAUDE.md, rules 존재 시 스킵
 - **GitHub 는 `gh` CLI + SSH 조합** — GitHub MCP/Docker/PAT 방식은 사용하지 않음
@@ -20,7 +20,7 @@ description: 데이터 컨설팅 팀(DCT) Claude Code 신규 셋업 가이드. A
 - [ ] `uvx` 설치 확인 (없으면 `brew install uv` 또는 `pip install uv`)
 - [ ] API 토큰 발급 (https://id.atlassian.com/manage-profile/security/api-tokens)
 - [ ] 리포 `settings-example.json` 에 `JIRA_USERNAME`, `JIRA_API_TOKEN`, `CONFLUENCE_USERNAME`, `CONFLUENCE_API_TOKEN` 입력 (사용자 직접)
-- [ ] 기존 `~/.claude/settings.json` 백업 (`cp … .bak-$(date +%Y%m%d-%H%M%S)`)
+- [ ] 기존 `~/.claude.json` 백업 (`cp … .bak-$(date +%Y%m%d-%H%M%S)`)
 - [ ] `jq` 로 `mcpServers.mcp-atlassian` 키만 병합 — `hooks`, `statusLine`, `enabledPlugins` 등 기존 키 보존
 - [ ] `git checkout settings-example.json` 으로 리포 파일 플레이스홀더 복원 (실수 커밋 방지)
 - [ ] Claude Code 재시작 후 `mcp-atlassian` 도구 노출 확인
@@ -48,7 +48,7 @@ description: 데이터 컨설팅 팀(DCT) Claude Code 신규 셋업 가이드. A
 - [ ] `madupteam.slack.com` 브라우저 로그인 후 개발자 도구에서 `xoxc-...`, `xoxd-...` 추출
 - [ ] `settings-example.json` 의 slack 섹션에 토큰 입력
 - [ ] `SLACK_MCP_ADD_MESSAGE_TOOL` 에 전송 허용 채널 ID 화이트리스트 (예: `C01234ABCD,C05678EFGH`) — 기본값 `false` 로 전송 비활성화 권장
-- [ ] `jq` 로 `~/.claude/settings.json` 에 병합
+- [ ] `jq` 로 `~/.claude.json` 에 병합
 - [ ] **주의**: 본인 Slack 세션 기반이라 로그아웃/장기 미접속 시 재발급 필요
 
 ### E. AWS CLI (선택)
@@ -69,7 +69,7 @@ AWS 리소스 접근이 필요한 경우만. MCP 는 설치하지 않고 CLI 만
 
 - **API 토큰/키는 절대 대화·로그·커밋에 노출 금지**
 - **사용자가 직접 파일에 입력** — Claude 가 토큰 값을 받아서 쓰지 않는다
-- **`~/.claude/settings.json` 을 `Read` 도구로 전체 출력 금지** — 토큰이 세션 로그에 남는다. 검증은 `jq '.mcpServers | keys'` 또는 `grep -c` 로만
+- **`~/.claude.json` 을 `Read` 도구로 전체 출력 금지** — 토큰이 세션 로그에 남는다. 검증은 `jq '.mcpServers | keys'` 또는 `grep -c` 로만
 - **백업 경로를 사용자에게 명확히 알림** — 복원 원라이너 예시도 함께 (`cp ~/.claude/settings.json.bak-<ts> ~/.claude/settings.json`)
 - **`settings-example.json` 커밋 방지** — 토큰 채운 후 반드시 `git checkout settings-example.json`
 
