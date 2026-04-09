@@ -1,21 +1,25 @@
 ---
 allowed-tools: [Read, Grep, Glob, Bash, TodoWrite]
-description: "Analyze code quality, security, performance, and architecture"
+description: "코드 품질/보안/성능/아키텍처 종합 분석"
 ---
 
-# /sc:analyze - Code Analysis
+# /sc:analyze — 코드 분석
 
-## Purpose
+## 목적
+품질·보안·성능·아키텍처 전 영역을 종합적으로 분석한다.
 
-Execute comprehensive code analysis across quality, security, performance, and architecture domains.
-
-## Usage
+## 사용법
 ```
-/sc:analyze [target] [--focus quality|security|performance|architecture] [--depth quick|deep]
+/sc:analyze [대상] [--focus quality|security|performance|architecture] [--depth quick|deep]
 ```
 
-## Execution
+## 실행 순서
+1. 파일 탐색 및 분류, 적절한 분석 도구 적용
+2. 심각도 등급과 함께 발견 사항 리포트 생성
+3. 우선순위가 매겨진 실행 가능한 개선안 제시
 
-1. Discover and categorize files, apply analysis tools
-2. Generate findings with severity ratings
-3. Create actionable recommendations with priorities
+## 예시
+```
+/sc:analyze src/ --focus security --depth deep
+/sc:analyze ./api --focus performance
+```

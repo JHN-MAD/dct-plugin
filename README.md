@@ -1,128 +1,103 @@
-# SuperClaude Lite - 팀 Claude Code 설정
+# DCT Claude Code Plugin
 
-팀 공통 Claude Code 설정 패키지. 페르소나 자동 활성화, `/sc:` 커맨드, 품질 스킬을 제공합니다.
+데이터 컨설팅 팀(DCT)의 AI Native 개발 환경 온보딩 및 **Jira/GitHub 워크플로우 자동화** 플러그인.
 
-## 빠른 시작 (3분)
+## 이게 뭐예요?
+
+데컨팀 신규 팀원이 Claude Code를 빠르게 셋업하고, 팀 표준 워크플로우(Jira 카드 기반 개발 → 브랜치 → 구현 → 댓글 정리)를 한 커맨드로 실행할 수 있게 해주는 **Claude Code 네이티브 플러그인**입니다.
+
+## 주요 기능
+
+### 커맨드
+| 커맨드 | 설명 |
+|--------|------|
+| `/dct` | 신규 팀원 온보딩 — MCP(Atlassian/GitHub) 설정, SSH 키, 팀 CLAUDE.md 배포 |
+| `/dct-job <DCTC-번호> <타입> <설명>` | Jira 카드 기반 작업 실행 — 브랜치→플랜→구현→Jira 댓글까지 자동화 |
+| `/sc:analyze` | 코드 품질/보안/성능/아키텍처 종합 분석 |
+| `/sc:implement` | 기능 구현 (페르소나 자동 활성화) |
+| `/sc:troubleshoot` | 이슈 진단 및 해결 |
+| `/sc:improve` | 코드 품질 개선 |
+| `/sc:test` | 테스트 실행 및 리포트 |
+| `/sc:build` | 프로젝트 빌드 |
+
+### 스킬
+- `dct-onboarding` — `/dct` 백엔드
+- `dct-jira-workflow` — `/dct-job` 백엔드
+- `test-driven-development` — TDD 워크플로우
+- `systematic-debugging` — 체계적 디버깅
+- `writing-plans` / `executing-plans` — 계획 작성·실행
+- `verification-before-completion` — 완료 전 검증
+- `requesting-code-review` / `receiving-code-review` — 코드 리뷰
+- `webapp-testing` — 웹앱 테스트 (Playwright 기반)
+
+### 팀 기본 규칙 (`rules/`)
+플러그인 설치 후 `/dct` 실행 시 `~/.claude/rules/` 로 배포되는 8개 규칙:
+- `korean-dev.md` — 한국어 응답, 영문 커밋
+- `personal.md` — 사용 정책
+- `performance.md` — 모델 선택, 컨텍스트 관리
+- `agents.md` — 서브에이전트 위임 기준
+- `python.md` — Python 가이드
+- `team-workflow.md` — GitHub/Jira/Confluence 워크플로우
+- `aws.md` — AWS 작업 가이드
+- `doc-updates.md` — 문서 동기화
+
+## 설치
+
+### 방법 1: 플러그인 디렉토리 참조 (로컬 개발)
+```bash
+git clone https://github.com/hyunseok-blue/claude-team-config.git ~/dct-plugin
+claude --plugin ~/dct-plugin
+```
+
+### 방법 2: `/plugin install` (권장)
+Claude Code 내에서:
+```
+/plugin install <plugin-source>
+```
+
+설치 후 Claude Code를 **재시작**하고 `/dct` 를 실행하세요.
+
+## 빠른 시작
 
 ```bash
-# 1. 이 repo 클론
-git clone <repo-url>
-cd claude-team-config
+# 1. 플러그인 설치 (위 참고)
 
-# 2. 설치 (기존 설정은 자동 백업됨)
-chmod +x install.sh
-./install.sh
+# 2. Claude Code 재시작
 
-# 3. Claude Code 재시작
+# 3. 온보딩 실행
+/dct
+
+# 4. Jira 카드 작업 시작
+/dct-job DCTC-1808 feat "프론트 사이드바 애니메이션 개선"
 ```
 
-미리보기만 하려면:
-```bash
-./install.sh --dry-run
-```
+## MCP 설정
 
-## 주요 커맨드
+`settings-example.json` 이 리포 루트에 있습니다. `/dct` 커맨드가 이 파일을 참조하여 사용자의 `~/.claude/settings.json` 으로 복사하고, 다음 MCP 서버를 설정하도록 안내합니다:
 
-| 커맨드 | 설명 | 예시 |
-|--------|------|------|
-| `/sc:implement` | 기능 구현 | `/sc:implement 로그인 API --type api` |
-| `/sc:analyze` | 코드 분석 | `/sc:analyze src/ --focus security` |
-| `/sc:test` | 테스트 실행 | `/sc:test --type unit --coverage` |
-| `/sc:troubleshoot` | 디버깅 | `/sc:troubleshoot 빌드 에러 --type build` |
-| `/sc:improve` | 코드 개선 | `/sc:improve src/utils --type quality` |
-| `/sc:git` | Git 워크플로우 | `/sc:git --smart-commit` |
-| `/sc:explain` | 코드 설명 | `/sc:explain src/auth --level intermediate` |
-| `/sc:build` | 빌드 | `/sc:build` |
-
-## 페르소나 자동 활성화
-
-대화에서 특정 키워드를 사용하면 전문가 페르소나가 자동 활성화됩니다:
-
-| 키워드 | 페르소나 | 전문 분야 |
-|--------|----------|-----------|
-| "component", "responsive" | `frontend` | Next.js, React, 접근성 |
-| "API", "database" | `backend` | FastAPI, 데이터 무결성 |
-| "analyze", "root cause" | `analyzer` | 디버깅, 근본 원인 분석 |
-| "test", "quality" | `qa` | 테스트 전략, 품질 관리 |
-| "architecture", "design" | `architect` | 시스템 설계, 확장성 |
-| "vulnerability", "auth" | `security` | 보안 검토, 위협 모델링 |
-
-수동 활성화: `--persona-frontend`, `--persona-backend` 등
-
-## Thinking 플래그
-
-복잡한 작업에서 더 깊은 분석을 요청할 수 있습니다:
-
-```
---think       → 멀티파일 분석 (기본)
---think-hard  → 시스템 전체 분석 (리팩토링, 보안)
---ultrathink  → 아키텍처 재설계급 분석
-```
-
-## 포함된 스킬
-
-| 스킬 | 용도 |
-|------|------|
-| `test-driven-development` | TDD 워크플로우 |
-| `systematic-debugging` | 체계적 디버깅 프로세스 |
-| `requesting-code-review` | 코드 리뷰 요청 |
-| `receiving-code-review` | 코드 리뷰 피드백 처리 |
-| `verification-before-completion` | 완료 전 검증 체크리스트 |
-| `writing-plans` | 구현 계획 작성 |
-| `executing-plans` | 계획 기반 구현 |
-| `webapp-testing` | 웹앱 테스트 |
-
-## 프로젝트별 설정
-
-각 프로젝트에 맞는 `.claude/CLAUDE.md`를 만들 수 있습니다:
-
-```bash
-# 프로젝트 루트에서
-mkdir -p .claude
-cp ~/claude-team-config/templates/project-claude.md.template .claude/CLAUDE.md
-# CLAUDE.md를 프로젝트에 맞게 수정
-```
-
-이 파일을 git에 커밋하면 팀 전원에게 자동 적용됩니다.
-
-## 고급 설정 (선택)
-
-더 강력한 기능이 필요하면:
-
-1. **oh-my-claudecode (OMC)** — 멀티에이전트 오케스트레이션
-   ```
-   npx oh-my-claudecode setup
-   ```
-
-2. **Context7 MCP** — 라이브러리 문서 자동 참조 (이미 설정에 포함)
-
-3. **추가 페르소나** — `~/.claude/PERSONAS.md`에 직접 추가 가능
-   - `mentor`: 코드 설명, 교육
-   - `performance`: 성능 최적화
-   - `devops`: 인프라, 배포
-   - `refactorer`: 리팩토링, 기술 부채
-   - `scribe`: 문서 작성
-
-## 제거
-
-```bash
-./uninstall.sh
-# 또는 특정 백업에서 복원
-./uninstall.sh ~/.claude/backup-20260323-141500
-```
+- **mcp-atlassian** (uvx) — Jira + Confluence
+- **github** (Docker + PAT) — `github-mcp-server`
 
 ## 구조
 
 ```
 claude-team-config/
-├── core/              # 핵심 프레임워크
-│   ├── CLAUDE.md      # 메인 설정 (~70줄)
-│   ├── COMMANDS.md    # 커맨드 정의
-│   ├── PERSONAS.md    # 6개 페르소나
-│   └── SYSTEM.md      # 시스템 설정
-├── commands/sc/       # 8개 슬래시 커맨드
-├── skills/            # 8개 품질 스킬
-├── templates/         # 프로젝트 템플릿
-├── install.sh         # 설치
-└── uninstall.sh       # 제거
+├── .claude-plugin/
+│   └── plugin.json          # 플러그인 메타
+├── commands/
+│   ├── dct.md               # /dct
+│   ├── dct-job.md           # /dct-job
+│   └── sc/                  # /sc:* 6개
+├── skills/                  # 9개 스킬 (dct-* 2개 + 공통 7개)
+├── rules/                   # 팀 기본 규칙 8개
+├── core/
+│   └── CLAUDE.md            # 사용자 전역 CLAUDE.md 템플릿
+├── templates/
+│   └── project-claude.md.template   # 프로젝트별 CLAUDE.md 템플릿
+├── settings-example.json    # MCP 설정 예시
+└── README.md
 ```
+
+## 문의/기여
+- 리포: https://github.com/hyunseok-blue/claude-team-config
+- 이슈/PR 환영

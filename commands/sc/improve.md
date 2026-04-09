@@ -1,21 +1,25 @@
 ---
 allowed-tools: [Read, Grep, Glob, Edit, MultiEdit, TodoWrite]
-description: "Apply systematic improvements to code quality, performance, and maintainability"
+description: "코드 품질·성능·유지보수성·스타일 개선을 체계적으로 적용"
 ---
 
-# /sc:improve - Code Improvement
+# /sc:improve — 코드 개선
 
-## Purpose
+## 목적
+코드 품질·성능·유지보수성·스타일을 체계적으로 개선한다.
 
-Apply systematic improvements to code quality, performance, maintainability, and best practices.
-
-## Usage
+## 사용법
 ```
-/sc:improve [target] [--type quality|performance|maintainability|style] [--safe] [--preview]
+/sc:improve [대상] [--type quality|performance|maintainability|style] [--safe] [--preview]
 ```
 
-## Execution
+## 실행 순서
+1. 개선 기회 분석 및 리스크 평가
+2. 개선 계획 작성·적용 및 검증
+3. 개선 결과 확인 및 변경사항 리포트
 
-1. Analyze code for improvement opportunities with risk assessment
-2. Create and apply improvement plan with validation
-3. Verify improvements and report changes
+## 예시
+```
+/sc:improve src/utils --type quality --safe
+/sc:improve ./api/handlers --type performance --preview
+```

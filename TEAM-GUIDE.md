@@ -1,88 +1,79 @@
-# Claude Code 팀 설정 공유 안내
+# DCT Claude Code 플러그인 — 팀 온보딩 가이드
 
 ## 이게 뭔가요?
 
-Claude Code를 쓸 때 **팀 전체가 일관된 품질로 작업**할 수 있도록 만든 공통 설정 패키지입니다.
+데이터 컨설팅 팀(DCT)이 Claude Code를 **같은 품질·같은 워크플로우**로 쓸 수 있게 만든 플러그인입니다.
 
-설치하면 이런 것들이 추가됩니다:
-- **슬래시 커맨드** — `/sc:implement`, `/sc:analyze` 등 8개 커맨드로 표준화된 워크플로우
-- **자동 페르소나** — "API" 얘기하면 backend 전문가 모드, "component" 얘기하면 frontend 전문가 모드로 자동 전환
-- **품질 스킬** — TDD, 코드리뷰, 디버깅 등 8개 스킬이 자동으로 적용
-- **품질 게이트** — Syntax → Types → Lint → Security → Test → Performance → Docs → Integration 8단계 검증
+설치하면:
+- **`/dct` 온보딩 커맨드** — MCP(Jira/Confluence/GitHub) 설정과 SSH 키 생성을 단계별로 안내
+- **`/dct-job` Jira 워크플로우** — 카드 번호만 주면 브랜치 생성 → 플랜 → 구현 → Jira 댓글까지 자동 실행
+- **팀 기본 규칙 8개** — 한국어 응답, 커밋 컨벤션, 브랜치 네이밍, Python/AWS/문서 동기화 등
+- **`/sc:` 커맨드 6개** — analyze/implement/troubleshoot/improve/test/build
+- **품질 스킬 9개** — TDD, 디버깅, 계획, 검증, 코드리뷰, 웹앱 테스트
 
 ## 왜 만들었나요?
 
-Claude Code는 기본 상태로도 유용하지만, 설정을 잘 잡아두면 체감 품질이 확 달라집니다.
+데컨팀 초반에 AI Native 개발 환경 셋업에 시간이 많이 들고, 팀원마다 Claude 사용 방식이 달라서 품질 편차가 생겼습니다. 이 플러그인은:
 
-- 코드 분석 시 보안/성능/품질을 **자동으로 다각도 검토**
-- 기능 구현 시 프로젝트 컨벤션과 Tech Stack을 **자동 인식**
-- 테스트/커밋/리뷰 같은 반복 작업을 **커맨드 하나로 실행**
-- 복잡한 문제는 `--think-hard` 플래그로 **깊은 분석 모드** 활성화
+- 신규 입사자가 **하루 안에** Claude Code + Jira/GitHub MCP 환경을 갖추게 하고
+- Jira 카드 단위 작업 플로우를 **한 커맨드로 표준화** 하며
+- 팀 공통 코딩/문서/워크플로우 규칙을 **한 곳에서** 관리합니다.
 
-각자 처음부터 설정하는 대신, 검증된 설정을 공유해서 바로 쓸 수 있게 한 겁니다.
-
-## 설치 방법 (3분)
+## 설치 (3분)
 
 ```bash
-git clone https://github.com/hyunseok-blue/claude-team-config.git
-cd claude-team-config
-./install.sh
+# 로컬 개발 모드
+git clone https://github.com/hyunseok-blue/claude-team-config.git ~/dct-plugin
+claude --plugin ~/dct-plugin
 ```
 
-- 기존 설정이 있으면 **자동 백업**됩니다 (걱정 안 해도 됨)
-- 미리 뭐가 설치되는지 보려면: `./install.sh --dry-run`
-- 제거하려면: `./uninstall.sh`
-
-설치 후 Claude Code를 **재시작**하면 적용됩니다.
-
-## 바로 써볼 수 있는 것들
-
-### 슬래시 커맨드
+또는 Claude Code 내에서:
 ```
-/sc:implement 로그인 API --type api        → API 구현 (backend 페르소나 자동 활성화)
-/sc:analyze src/ --focus security          → 보안 중심 코드 분석
-/sc:test --type unit --coverage            → 테스트 실행 + 커버리지 리포트
-/sc:troubleshoot 빌드 에러 --type build    → 체계적 디버깅
-/sc:improve src/utils --type quality       → 코드 품질 개선
-/sc:git --smart-commit                     → 변경사항 분석해서 커밋 메시지 자동 생성
+/plugin install <plugin-source>
 ```
 
-### 깊은 분석이 필요할 때
+설치 후 Claude Code를 **재시작**하고 아래를 실행하세요:
 ```
---think       → 여러 파일에 걸친 분석
---think-hard  → 시스템 전체 분석 (리팩토링, 보안 검토)
---ultrathink  → 아키텍처 재설계급 깊은 분석
+/dct
 ```
 
-### 페르소나 수동 활성화
+## 온보딩 체크리스트 (`/dct` 가 안내)
+
+1. **Atlassian MCP** — Jira API 토큰 발급, `settings.json` 설정
+2. **GitHub MCP** — PAT 발급, `github-mcp-server` Docker 설정
+3. **GitHub SSH 키** — `dct` 네임스페이스로 키 생성 및 등록
+4. **팀 CLAUDE.md 배포** — `~/.claude/CLAUDE.md` + `~/.claude/rules/*.md` 8개 복사
+5. **최종 점검** — MCP 연결 확인, 스모크 테스트
+
+## 일상 워크플로우
+
+### Jira 카드 작업
 ```
---persona-frontend    → Next.js/React 전문가 모드
---persona-backend     → FastAPI/API 전문가 모드
---persona-security    → 보안 전문가 모드
---persona-qa          → 테스트/품질 전문가 모드
+/dct-job DCTC-1808 feat "프론트 사이드바 애니메이션 개선"
+```
+- `dev` 브랜치에서 `feature/DCTC-1808` 생성
+- 작업 범위 분석 → 플랜 작성 → Jira 카드에 플랜 업로드
+- 구현 → 검증 → Jira 댓글로 완료 요약
+- 필요 시 PR 생성 (`gh pr create`)
+
+### 일반 개발 작업
+```
+/sc:implement 로그인 API --type api --with-tests
+/sc:analyze src/ --focus security
+/sc:troubleshoot "로그인 후 리다이렉트 안됨" --type bug
 ```
 
-## 프로젝트별 설정 (선택)
+## 프로젝트별 설정
 
-각 프로젝트 repo에 `.claude/CLAUDE.md`를 만들면 프로젝트 맞춤 설정도 가능합니다:
+각 프로젝트에 `.claude/CLAUDE.md` 를 두면 프로젝트 맞춤 설정이 가능합니다:
 
 ```bash
 mkdir -p .claude
-cp ~/claude-team-config/templates/project-claude.md.template .claude/CLAUDE.md
-# 프로젝트에 맞게 수정 후 git commit
+cp ~/dct-plugin/templates/project-claude.md.template .claude/CLAUDE.md
+# 프로젝트에 맞게 수정 후 커밋
 ```
 
-이걸 git에 커밋하면 해당 프로젝트에서 작업하는 모든 팀원에게 자동 적용됩니다.
-
-## 더 강력하게 쓰고 싶다면
-
-- **oh-my-claudecode (OMC)** 플러그인: 멀티에이전트 병렬 실행, 자동 코드 리뷰 등
-- **Context7 MCP**: Next.js, React, FastAPI 공식 문서 자동 참조
-- **추가 페르소나**: mentor, performance, devops, refactorer 등 5개 더 추가 가능
-
-관심 있으면 편하게 물어보세요!
-
 ## 문제가 있다면
-
-- `./uninstall.sh`로 언제든 원래 상태로 복원 가능
-- 기존 개인 설정이 있었다면 `~/.claude/backup-*` 폴더에 백업되어 있음
+- 기존 `~/.claude/CLAUDE.md` 는 `/dct` 실행 시 `.bak-<timestamp>` 로 자동 백업됩니다
+- MCP 연결 실패 시 `~/.claude/settings.json` 의 JSON 문법/토큰을 먼저 확인
+- 이슈 리포트: https://github.com/hyunseok-blue/claude-team-config/issues

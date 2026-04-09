@@ -1,139 +1,139 @@
 ---
 name: verification-before-completion
-description: Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evidence before assertions always
+description: 작업이 완료, 수정, 또는 통과했다고 주장하기 전에, 검증 명령 실행하고 출력 확인한 후에 사용 - 증거 없이 단언하지 말 것
 ---
 
 # Verification Before Completion
 
-## Overview
+## 개요
 
-Claiming work is complete without verification is dishonesty, not efficiency.
+검증 없이 작업 완료를 주장하는 것은 효율이 아니라 거짓이다.
 
-**Core principle:** Evidence before claims, always.
+**핵심 원칙:** 증거 먼저, 항상.
 
-**Violating the letter of this rule is violating the spirit of this rule.**
+**이 규칙의 형식을 어기는 것은 이 규칙의 정신을 어기는 것이다.**
 
-## The Iron Law
-
-```
-NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
-```
-
-If you haven't run the verification command in this message, you cannot claim it passes.
-
-## The Gate Function
+## 철칙
 
 ```
-BEFORE claiming any status or expressing satisfaction:
-
-1. IDENTIFY: What command proves this claim?
-2. RUN: Execute the FULL command (fresh, complete)
-3. READ: Full output, check exit code, count failures
-4. VERIFY: Does output confirm the claim?
-   - If NO: State actual status with evidence
-   - If YES: State claim WITH evidence
-5. ONLY THEN: Make the claim
-
-Skip any step = lying, not verifying
+신선한 검증 증거 없이 완료 주장하지 말 것
 ```
 
-## Common Failures
+이 메시지에서 검증 명령을 실행하지 않았으면, 통과했다고 주장할 수 없다.
 
-| Claim | Requires | Not Sufficient |
-|-------|----------|----------------|
-| Tests pass | Test command output: 0 failures | Previous run, "should pass" |
-| Linter clean | Linter output: 0 errors | Partial check, extrapolation |
-| Build succeeds | Build command: exit 0 | Linter passing, logs look good |
-| Bug fixed | Test original symptom: passes | Code changed, assumed fixed |
-| Regression test works | Red-green cycle verified | Test passes once |
-| Agent completed | VCS diff shows changes | Agent reports "success" |
-| Requirements met | Line-by-line checklist | Tests passing |
+## 게이트 함수
 
-## Red Flags - STOP
-
-- Using "should", "probably", "seems to"
-- Expressing satisfaction before verification ("Great!", "Perfect!", "Done!", etc.)
-- About to commit/push/PR without verification
-- Trusting agent success reports
-- Relying on partial verification
-- Thinking "just this once"
-- Tired and wanting work over
-- **ANY wording implying success without having run verification**
-
-## Rationalization Prevention
-
-| Excuse | Reality |
-|--------|---------|
-| "Should work now" | RUN the verification |
-| "I'm confident" | Confidence ≠ evidence |
-| "Just this once" | No exceptions |
-| "Linter passed" | Linter ≠ compiler |
-| "Agent said success" | Verify independently |
-| "I'm tired" | Exhaustion ≠ excuse |
-| "Partial check is enough" | Partial proves nothing |
-| "Different words so rule doesn't apply" | Spirit over letter |
-
-## Key Patterns
-
-**Tests:**
 ```
-✅ [Run test command] [See: 34/34 pass] "All tests pass"
-❌ "Should pass now" / "Looks correct"
+어떤 상태를 주장하거나 만족을 표현하기 전에:
+
+1. 확인: 이 주장을 증명하는 명령은 뭐인가?
+2. 실행: 전체 명령 실행 (새로, 완전)
+3. 읽기: 전체 출력, 종료 코드 확인, 실패 세기
+4. 검증: 출력이 주장을 확인하는가?
+   - 아니면: 증거와 함께 실제 상태 명시
+   - 맞으면: 증거와 함께 주장 명시
+5. 그 다음: 주장하기
+
+어떤 단계든 건너뛰기 = 거짓, 검증 아님
 ```
 
-**Regression tests (TDD Red-Green):**
+## 일반적 실패
+
+| 주장 | 필요 | 충분하지 않음 |
+|------|------|-----------|
+| 테스트 통과 | 테스트 명령 출력: 0 실패 | 이전 실행, "통과할 것" |
+| Linter 깨끗함 | Linter 출력: 0 에러 | 부분 확인, 추론 |
+| 빌드 성공 | 빌드 명령: 종료 0 | Linter 통과, 로그 괜찮아 보임 |
+| 버그 고침 | 원래 증상 테스트: 통과 | 코드 바뀜, 고쳐졌다고 가정 |
+| 회귀 테스트 작동 | RED-GREEN 사이클 검증 | 테스트 한 번 통과 |
+| Agent 완료 | VCS diff는 변경 보여줌 | Agent가 "성공" 보고 |
+| 요구사항 충족 | 라인-바이-라인 체크리스트 | 테스트 통과 |
+
+## 빨간 깃발 - STOP
+
+- "should", "probably", "seems to" 사용
+- 검증 전에 만족 표현 ("Great!", "Perfect!", "Done!" 등)
+- 검증 없이 커밋/푸시/PR 하려고 함
+- Agent 성공 보고 신뢰
+- 부분 검증에 의존
+- "이번만" 생각
+- 피곤하고 끝내고 싶음
+- **성공을 검증 없이 함축하는 어떤 표현든**
+
+## 합리화 방지
+
+| 핑계 | 현실 |
+|------|------|
+| "지금 작동할 것" | 검증 명령 실행 |
+| "나 확신한다" | 확신 ≠ 증거 |
+| "이번만" | 예외 없음 |
+| "Linter 통과" | Linter ≠ 컴파일러 |
+| "Agent 성공했다고 말함" | 독립적으로 검증 |
+| "나 피곤하다" | 피곤함 ≠ 핑계 |
+| "부분 확인 충분" | 부분은 아무것도 증명 안 함 |
+| "다른 표현이니 규칙 적용 안 됨" | 정신이 형식을 이김 |
+
+## 핵심 패턴
+
+**테스트:**
 ```
-✅ Write → Run (pass) → Revert fix → Run (MUST FAIL) → Restore → Run (pass)
-❌ "I've written a regression test" (without red-green verification)
+✅ [테스트 명령 실행] [보기: 34/34 통과] "모든 테스트 통과"
+❌ "이제 통과할 것" / "맞아 보임"
 ```
 
-**Build:**
+**회귀 테스트 (TDD RED-GREEN):**
 ```
-✅ [Run build] [See: exit 0] "Build passes"
-❌ "Linter passed" (linter doesn't check compilation)
-```
-
-**Requirements:**
-```
-✅ Re-read plan → Create checklist → Verify each → Report gaps or completion
-❌ "Tests pass, phase complete"
+✅ 작성 → 실행 (통과) → 수정 되돌리기 → 실행 (반드시 실패) → 복구 → 실행 (통과)
+❌ "회귀 테스트 작성했다" (RED-GREEN 검증 없이)
 ```
 
-**Agent delegation:**
+**빌드:**
 ```
-✅ Agent reports success → Check VCS diff → Verify changes → Report actual state
-❌ Trust agent report
+✅ [빌드 실행] [보기: 종료 0] "빌드 통과"
+❌ "Linter 통과" (Linter는 컴파일 확인 안 함)
 ```
 
-## Why This Matters
+**요구사항:**
+```
+✅ 계획 다시 읽기 → 체크리스트 만들기 → 각각 검증 → 격차나 완료 보고
+❌ "테스트 통과, Phase 완료"
+```
 
-From 24 failure memories:
-- your human partner said "I don't believe you" - trust broken
-- Undefined functions shipped - would crash
-- Missing requirements shipped - incomplete features
-- Time wasted on false completion → redirect → rework
-- Violates: "Honesty is a core value. If you lie, you'll be replaced."
+**Agent 위임:**
+```
+✅ Agent 성공 보고 → VCS diff 확인 → 변경 검증 → 실제 상태 보고
+❌ Agent 보고 신뢰
+```
 
-## When To Apply
+## 왜 이것이 중요한가
 
-**ALWAYS before:**
-- ANY variation of success/completion claims
-- ANY expression of satisfaction
-- ANY positive statement about work state
-- Committing, PR creation, task completion
-- Moving to next task
-- Delegating to agents
+24개 실패 기억에서:
+- 인간 파트너가 "내 못 믿어" - 신뢰 깨짐
+- 정의 안 된 함수 배포 - 충돌할 것
+- 누락된 요구사항 배포 - 미완 기능
+- 거짓 완료에 시간 낭비 → 리다이렉트 → 재작업
+- 위반: "정직성은 핵심 가치. 거짓말하면 교체될 것."
 
-**Rule applies to:**
-- Exact phrases
-- Paraphrases and synonyms
-- Implications of success
-- ANY communication suggesting completion/correctness
+## 언제 적용하는가
 
-## The Bottom Line
+**항상 하기 전에:**
+- 성공/완료 주장의 어떤 변형이든
+- 어떤 만족 표현이든
+- 작업 상태에 대한 긍정적 명시문
+- 커밋, PR 생성, 작업 완료
+- 다음 작업으로 이동
+- Agent에 위임
 
-**No shortcuts for verification.**
+**규칙이 적용되는 것:**
+- 정확한 구절
+- 의역과 동의어
+- 성공/올바름의 함축
+- 완료/올바름을 제안하는 어떤 소통든
 
-Run the command. Read the output. THEN claim the result.
+## 핵심 규칙
 
-This is non-negotiable.
+**검증을 위한 단축 없음.**
+
+명령 실행. 출력 읽기. 그 다음 결과 주장.
+
+이것은 협상 불가능하다.

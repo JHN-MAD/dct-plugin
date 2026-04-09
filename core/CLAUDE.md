@@ -1,68 +1,37 @@
-# SuperClaude Lite - Team Configuration
+# 규칙 인덱스 (On-Demand Loading)
 
-팀 공통 Claude Code 설정. 개인 설정은 각자의 `~/.claude/`에서 관리.
+모든 사용자 규칙은 `~/.claude/rules/` 에서 관리된다. **전체 규칙을 자동으로 로드하지 말 것.**
+아래 인덱스에서 현재 작업과 관련된 규칙 파일만 `Read` 도구로 읽어 적용한다. (컨텍스트 절약)
 
-@COMMANDS.md
-@PERSONAS.md
-@SYSTEM.md
+## 상시 적용 (세션 시작 시 1회 Read 권장)
+- `~/.claude/rules/korean-dev.md` — 응답 언어(한국어), 커밋/네이밍 컨벤션
+- `~/.claude/rules/personal.md` — 사용 정책 관련 금지사항
+- `~/.claude/rules/performance.md` — 모델 선택, 컨텍스트 관리
+- `~/.claude/rules/agents.md` — 서브에이전트 위임 기준
 
-## Primary Directive
+## 상황별 (트리거 시 Read)
+- `~/.claude/rules/python.md` — Python(.py, pytest, poetry 등) 작업 시
+- `~/.claude/rules/team-workflow.md` — GitHub 브랜치/커밋, Jira, Confluence 작업 시
+- `~/.claude/rules/aws.md` — AWS/aws-cli/IAM/S3/EC2 관련 작업 시
+- `~/.claude/rules/doc-updates.md` — 작업 완료 직전 (문서 동기화 체크)
 
-Evidence > assumptions | Code > documentation | Efficiency > verbosity
+## 운영 원칙
+- 트리거 키워드가 없으면 해당 규칙을 읽지 않는다.
+- 동일 세션 내 이미 읽은 규칙은 재-Read 하지 않는다.
+- 새 규칙은 이 인덱스에 한 줄씩 추가한다 (본문을 CLAUDE.md에 인라인하지 말 것).
 
-## Core Rules
+## DCT 플러그인 커맨드
+- `/dct` — 신규 팀원 온보딩 (MCP/SSH/팀 기본 설정)
+- `/dct-job <DCTC-번호> <타입> <설명>` — Jira 카드 기반 작업 실행
+- `/sc:analyze`, `/sc:implement`, `/sc:troubleshoot`, `/sc:improve`, `/sc:test`, `/sc:build` — 일반 개발 워크플로우
 
-### Always
+## 핵심 원칙
+- **Evidence > assumptions** — 추측 대신 근거
+- **Read before Write** — 쓰기 전 반드시 읽기
+- **Batch parallel** — 독립 호출은 병렬 실행
+- **Verify after completion** — 완료 주장 전 검증
 
-- Read before Write/Edit. Absolute paths only
-- Batch independent tool calls in parallel
-- Validate before execution, verify after completion
-- Check package.json/pyproject.toml before using libraries
-- Follow existing project patterns, import style, conventions
-- Auto-activate personas based on task context
-- Run lint/typecheck before marking tasks complete
-
-### Never
-
-- Auto-commit without explicit request
-- Skip validation or override safety protocols
-- Make codebase changes without project-wide discovery first
-
-### Systematic Changes
-
-- MANDATORY: Search ALL file types for ALL variations before changes
-- Plan update sequence based on dependencies
-- Verify completion with post-change search
-
-## Tech Stack
-
-- **Frontend**: Next.js (App Router + Pages Router), React, TypeScript, Tailwind CSS
-- **Backend**: Python (FastAPI), Next.js API Routes
-- **DB/ORM**: PostgreSQL, Prisma/Drizzle
-- **Infra**: Docker, AWS/GCP, Local deploy
-- **Package**: npm
-- **Context7**: Auto-use for Next.js, React, FastAPI, Prisma docs
-
-## Jira / Confluence
-
-<!-- 프로젝트별 .claude/CLAUDE.md 또는 아래에 직접 설정하세요 -->
-- **Atlassian 도메인**: [your-domain].atlassian.net
-- **Jira 프로젝트 키**: [PROJECT_KEY]
-- **Confluence 스페이스 키**: [SPACE_KEY]
-
-### Jira 사용 규칙
-- 프로젝트 작업 시 관련 Jira 이슈를 **반드시** 확인/참조
-- 작업 시작/완료 시 Jira 이슈 상태 업데이트 제안
-- mcp-atlassian MCP 도구가 사용 가능하면 우선 사용
-- MCP 도구 불가 시 curl REST API 폴백
-
-## Quality Gates
-
-1. **Syntax** — Language parser validation
-2. **Types** — Type compatibility check
-3. **Lint** — Code quality rules
-4. **Security** — Vulnerability assessment, OWASP
-5. **Test** — Coverage: ≥80% unit, ≥70% integration
-6. **Performance** — Benchmarks, optimization
-7. **Documentation** — Completeness, accuracy
-8. **Integration** — E2E testing, deployment validation
+## 금지
+- 명시적 요청 없는 자동 커밋
+- 검증 생략, 안전 프로토콜 우회
+- 프로젝트 전역 탐색 없이 코드베이스 변경

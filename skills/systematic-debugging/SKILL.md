@@ -1,92 +1,92 @@
 ---
 name: systematic-debugging
-description: Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes
+description: 버그, 테스트 실패, 또는 예상 밖의 동작에 직면했을 때, 수정을 제안하기 전에 사용
 ---
 
 # Systematic Debugging
 
-## Overview
+## 개요
 
-Random fixes waste time and create new bugs. Quick patches mask underlying issues.
+무작위 수정은 시간을 낭비하고 새로운 버그를 만든다. 빠른 임시방편은 근본적 문제를 숨긴다.
 
-**Core principle:** ALWAYS find root cause before attempting fixes. Symptom fixes are failure.
+**핵심 원칙:** 수정을 시도하기 전에 항상 근본 원인을 찾아라. 증상 수정은 실패다.
 
-**Violating the letter of this process is violating the spirit of debugging.**
+**이 프로세스의 형식을 어기는 것은 디버깅의 정신을 어기는 것이다.**
 
-## The Iron Law
+## 철칙
 
 ```
-NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
+근본 원인 조사 없이 수정하지 말 것
 ```
 
-If you haven't completed Phase 1, you cannot propose fixes.
+Phase 1을 완료하지 않으면, 수정을 제안할 수 없다.
 
-## When to Use
+## 언제 사용하는가
 
-Use for ANY technical issue:
-- Test failures
-- Bugs in production
-- Unexpected behavior
-- Performance problems
-- Build failures
-- Integration issues
+모든 기술적 문제에 사용하라:
+- 테스트 실패
+- 프로덕션 버그
+- 예상 밖 동작
+- 성능 문제
+- 빌드 실패
+- 통합 문제
 
-**Use this ESPECIALLY when:**
-- Under time pressure (emergencies make guessing tempting)
-- "Just one quick fix" seems obvious
-- You've already tried multiple fixes
-- Previous fix didn't work
-- You don't fully understand the issue
+**특히 이때 사용하라:**
+- 시간 압박 상황 (긴급은 추측을 유혹한다)
+- "빠른 수정 한 개"가 명확해 보일 때
+- 이미 여러 수정을 시도했을 때
+- 이전 수정이 작동 안 했을 때
+- 문제를 완전히 이해 못했을 때
 
-**Don't skip when:**
-- Issue seems simple (simple bugs have root causes too)
-- You're in a hurry (rushing guarantees rework)
-- Manager wants it fixed NOW (systematic is faster than thrashing)
+**건너뛰지 말 것:**
+- 문제가 간단해 보일 때 (간단한 버그도 근본 원인이 있다)
+- 급할 때 (체계적이 추측-확인보다 빠르다)
+- 매니저가 지금 고쳐달고 할 때 (체계적이 더 빠르다)
 
-## The Four Phases
+## 네 가지 Phase
 
-You MUST complete each phase before proceeding to the next.
+각 phase를 다음 phase로 가기 전에 반드시 완료해야 한다.
 
-### Phase 1: Root Cause Investigation
+### Phase 1: 근본 원인 조사
 
-**BEFORE attempting ANY fix:**
+**어떤 수정도 시도하기 전에:**
 
-1. **Read Error Messages Carefully**
-   - Don't skip past errors or warnings
-   - They often contain the exact solution
-   - Read stack traces completely
-   - Note line numbers, file paths, error codes
+1. **에러 메시지 주의 깊게 읽기**
+   - 에러나 경고를 건너뛰지 말 것
+   - 정확한 해결책을 종종 포함한다
+   - 스택 트레이스를 완전히 읽기
+   - 라인 숫자, 파일 경로, 에러 코드 메모
 
-2. **Reproduce Consistently**
-   - Can you trigger it reliably?
-   - What are the exact steps?
-   - Does it happen every time?
-   - If not reproducible → gather more data, don't guess
+2. **일관되게 재현하기**
+   - 신뢰적으로 유발할 수 있는가?
+   - 정확한 단계는 뭐인가?
+   - 매번 일어나는가?
+   - 재현 불가 → 더 많은 데이터 수집, 추측하지 말 것
 
-3. **Check Recent Changes**
-   - What changed that could cause this?
-   - Git diff, recent commits
-   - New dependencies, config changes
-   - Environmental differences
+3. **최근 변경사항 확인**
+   - 이를 유발할 수 있는 변경은 뭐인가?
+   - Git diff, 최근 커밋
+   - 새 의존성, 설정 변경
+   - 환경 차이
 
-4. **Gather Evidence in Multi-Component Systems**
+4. **다중-컴포넌트 시스템에서 증거 수집**
 
-   **WHEN system has multiple components (CI → build → signing, API → service → database):**
+   **시스템이 여러 컴포넌트를 가질 때 (CI → build → signing, API → service → database):**
 
-   **BEFORE proposing fixes, add diagnostic instrumentation:**
+   **수정을 제안하기 전에, 진단 계측 추가:**
    ```
-   For EACH component boundary:
-     - Log what data enters component
-     - Log what data exits component
-     - Verify environment/config propagation
-     - Check state at each layer
+   각 컴포넌트 경계마다:
+     - 컴포넌트에 들어오는 데이터 로깅
+     - 컴포넌트에서 나가는 데이터 로깅
+     - 환경/설정 전파 검증
+     - 각 레이어에서 상태 확인
 
-   Run once to gather evidence showing WHERE it breaks
-   THEN analyze evidence to identify failing component
-   THEN investigate that specific component
+   한 번 실행해서 어디가 망가지는지 보여주는 증거 수집
+   그 다음 증거 분석해서 실패 컴포넌트 확인
+   그 다음 그 특정 컴포넌트 조사
    ```
 
-   **Example (multi-layer system):**
+   **예시 (다중-레이어 시스템):**
    ```bash
    # Layer 1: Workflow
    echo "=== Secrets available in workflow: ==="
@@ -105,192 +105,192 @@ You MUST complete each phase before proceeding to the next.
    codesign --sign "$IDENTITY" --verbose=4 "$APP"
    ```
 
-   **This reveals:** Which layer fails (secrets → workflow ✓, workflow → build ✗)
+   **드러내는 것:** 어느 레이어가 실패했는가 (secrets → workflow ✓, workflow → build ✗)
 
-5. **Trace Data Flow**
+5. **데이터 흐름 추적**
 
-   **WHEN error is deep in call stack:**
+   **에러가 깊은 호출 스택에 있을 때:**
 
-   See `root-cause-tracing.md` in this directory for the complete backward tracing technique.
+   이 디렉토리의 `root-cause-tracing.md`를 보라 완전한 역추적 기법을 위해.
 
-   **Quick version:**
-   - Where does bad value originate?
-   - What called this with bad value?
-   - Keep tracing up until you find the source
-   - Fix at source, not at symptom
+   **빠른 버전:**
+   - 나쁜 값이 어디서 나온가?
+   - 이를 나쁜 값으로 호출한 것은?
+   - 소스를 찾을 때까지 계속 추적하기
+   - 증상이 아닌 소스에서 수정하기
 
-### Phase 2: Pattern Analysis
+### Phase 2: 패턴 분석
 
-**Find the pattern before fixing:**
+**수정하기 전에 패턴을 찾아라:**
 
-1. **Find Working Examples**
-   - Locate similar working code in same codebase
-   - What works that's similar to what's broken?
+1. **작동하는 예시 찾기**
+   - 같은 코드베이스에서 유사한 작동 코드 찾기
+   - 망가진 것과 유사하지만 작동하는 것은?
 
-2. **Compare Against References**
-   - If implementing pattern, read reference implementation COMPLETELY
-   - Don't skim - read every line
-   - Understand the pattern fully before applying
+2. **참조 코드와 비교**
+   - 패턴 구현이면, 참조 구현을 완전히 읽기
+   - 건너뛰지 말 것 - 모든 라인 읽기
+   - 적용하기 전에 패턴을 완전히 이해하기
 
-3. **Identify Differences**
-   - What's different between working and broken?
-   - List every difference, however small
-   - Don't assume "that can't matter"
+3. **차이점 확인**
+   - 작동하는 것과 망가진 것의 차이는?
+   - 아무리 작은 차이든 모두 나열하기
+   - "그건 중요하지 않을 수 없다"고 가정하지 말 것
 
-4. **Understand Dependencies**
-   - What other components does this need?
-   - What settings, config, environment?
-   - What assumptions does it make?
+4. **의존성 이해하기**
+   - 이게 필요로 하는 다른 컴포넌트는?
+   - 무슨 설정, 환경?
+   - 뭘 가정하는가?
 
-### Phase 3: Hypothesis and Testing
+### Phase 3: 가설과 테스트
 
-**Scientific method:**
+**과학 방법:**
 
-1. **Form Single Hypothesis**
-   - State clearly: "I think X is the root cause because Y"
-   - Write it down
-   - Be specific, not vague
+1. **하나의 가설 세우기**
+   - 명확하게 상태: "X가 근본 원인이라고 생각한다 왜냐하면 Y"
+   - 적어두기
+   - 구체적, 모호하지 않게
 
-2. **Test Minimally**
-   - Make the SMALLEST possible change to test hypothesis
-   - One variable at a time
-   - Don't fix multiple things at once
+2. **최소로 테스트하기**
+   - 가설을 테스트하는 가장 작은 변경만
+   - 한 번에 하나의 변수
+   - 여러 것을 동시에 고치지 말 것
 
-3. **Verify Before Continuing**
-   - Did it work? Yes → Phase 4
-   - Didn't work? Form NEW hypothesis
-   - DON'T add more fixes on top
+3. **계속하기 전에 검증하기**
+   - 작동했는가? 그렇다 → Phase 4
+   - 안 했는가? 새로운 가설 세우기
+   - 더 많은 수정을 위에 추가하지 말 것
 
-4. **When You Don't Know**
-   - Say "I don't understand X"
-   - Don't pretend to know
-   - Ask for help
-   - Research more
+4. **모를 때**
+   - "나는 X를 이해 못한다"고 말하기
+   - 안다고 가짜하지 말 것
+   - 도움 청하기
+   - 더 조사하기
 
-### Phase 4: Implementation
+### Phase 4: 구현
 
-**Fix the root cause, not the symptom:**
+**증상이 아닌 근본 원인을 고쳐라:**
 
-1. **Create Failing Test Case**
-   - Simplest possible reproduction
-   - Automated test if possible
-   - One-off test script if no framework
-   - MUST have before fixing
-   - Use the `superpowers:test-driven-development` skill for writing proper failing tests
+1. **실패 테스트 케이스 만들기**
+   - 가장 간단한 재현
+   - 가능하면 자동 테스트
+   - 프레임워크 없으면 일회용 테스트 스크립트
+   - 고치기 전에 반드시 있어야 함
+   - 적절한 실패 테스트 작성을 위해 `superpowers:test-driven-development` 스킬 사용
 
-2. **Implement Single Fix**
-   - Address the root cause identified
-   - ONE change at a time
-   - No "while I'm here" improvements
-   - No bundled refactoring
+2. **단일 수정 구현하기**
+   - 확인된 근본 원인 처리
+   - 한 번에 하나의 변경
+   - "이참에" 개선 없음
+   - 번들 리팩토링 없음
 
-3. **Verify Fix**
-   - Test passes now?
-   - No other tests broken?
-   - Issue actually resolved?
+3. **수정 검증하기**
+   - 테스트 통과하는가?
+   - 다른 테스트 손상됐는가?
+   - 실제로 문제 해결됐는가?
 
-4. **If Fix Doesn't Work**
+4. **수정이 작동 안 하면**
    - STOP
-   - Count: How many fixes have you tried?
-   - If < 3: Return to Phase 1, re-analyze with new information
-   - **If ≥ 3: STOP and question the architecture (step 5 below)**
-   - DON'T attempt Fix #4 without architectural discussion
+   - 세기: 몇 개 수정을 시도했는가?
+   - < 3이면: Phase 1로 돌아가, 새 정보로 다시 분석
+   - **≥ 3이면: STOP하고 아키텍처 질문 (아래 5단계)**
+   - 4번째 수정을 아키텍처 논의 없이 시도하지 말 것
 
-5. **If 3+ Fixes Failed: Question Architecture**
+5. **3개 이상 수정 실패: 아키텍처 질문**
 
-   **Pattern indicating architectural problem:**
-   - Each fix reveals new shared state/coupling/problem in different place
-   - Fixes require "massive refactoring" to implement
-   - Each fix creates new symptoms elsewhere
+   **아키텍처 문제를 나타내는 패턴:**
+   - 각 수정이 다른 곳의 새로운 공유 상태/결합/문제를 드러냄
+   - 수정이 "거대한 리팩토링"을 필요로 함
+   - 각 수정이 다른 곳에 새로운 증상 만듦
 
-   **STOP and question fundamentals:**
-   - Is this pattern fundamentally sound?
-   - Are we "sticking with it through sheer inertia"?
-   - Should we refactor architecture vs. continue fixing symptoms?
+   **STOP하고 근본을 질문하라:**
+   - 이 패턴이 근본적으로 건전한가?
+   - "순수 관성"으로 견디고 있는 건 아닌가?
+   - 증상 계속 고치는 것 대신 아키텍처를 리팩토링해야 하는가?
 
-   **Discuss with your human partner before attempting more fixes**
+   **더 많은 수정을 시도하기 전에 인간 파트너와 논의하라**
 
-   This is NOT a failed hypothesis - this is a wrong architecture.
+   이것은 실패한 가설이 아니다 - 이것은 잘못된 아키텍처다.
 
-## Red Flags - STOP and Follow Process
+## 빨간 깃발 - STOP하고 프로세스 따르기
 
-If you catch yourself thinking:
-- "Quick fix for now, investigate later"
-- "Just try changing X and see if it works"
-- "Add multiple changes, run tests"
-- "Skip the test, I'll manually verify"
-- "It's probably X, let me fix that"
-- "I don't fully understand but this might work"
-- "Pattern says X but I'll adapt it differently"
-- "Here are the main problems: [lists fixes without investigation]"
-- Proposing solutions before tracing data flow
-- **"One more fix attempt" (when already tried 2+)**
-- **Each fix reveals new problem in different place**
+자신이 생각하는 것을 잡으면:
+- "일단 빠른 수정, 나중에 조사"
+- "X를 바꿔보고 작동하는지 보자"
+- "여러 변경 추가, 테스트 실행"
+- "테스트 건너뛰고 수동으로 검증"
+- "아마 X일 것 같으니 고쳐보자"
+- "완전히 이해 못했지만 작동할 수도"
+- "패턴은 X라고 하지만 다르게 적용하겠다"
+- "주요 문제들: [조사 없이 수정 나열]"
+- 데이터 흐름 추적 없이 솔루션 제안
+- **"한 번 더" (이미 2개 이상 시도했을 때)**
+- **각 수정이 다른 곳에 새 문제를 드러냄**
 
-**ALL of these mean: STOP. Return to Phase 1.**
+**모두: STOP. Phase 1로 돌아가.**
 
-**If 3+ fixes failed:** Question the architecture (see Phase 4.5)
+**3개 이상 수정 실패:** 아키텍처 질문 (Phase 4.5 참조)
 
-## your human partner's Signals You're Doing It Wrong
+## 인간 파트너의 신호 - 잘못하는 중
 
-**Watch for these redirections:**
-- "Is that not happening?" - You assumed without verifying
-- "Will it show us...?" - You should have added evidence gathering
-- "Stop guessing" - You're proposing fixes without understanding
-- "Ultrathink this" - Question fundamentals, not just symptoms
-- "We're stuck?" (frustrated) - Your approach isn't working
+**이 리다이렉션을 주목하라:**
+- "아 그게 안 되는 건가?" - 검증 없이 가정했다
+- "여기 뭘 보여줄까?" - 증거 수집했어야 한다
+- "추측하지 말 것" - 이해 없이 수정 제안 중
+- "이걸 깊이 생각해봐" - 증상이 아닌 근본을 질문하라
+- "우린 막혔어" (좌절) - 접근이 작동 안 한다
 
-**When you see these:** STOP. Return to Phase 1.
+**이들이 보일 때:** STOP. Phase 1로 돌아가.
 
-## Common Rationalizations
+## 일반적인 합리화
 
-| Excuse | Reality |
-|--------|---------|
-| "Issue is simple, don't need process" | Simple issues have root causes too. Process is fast for simple bugs. |
-| "Emergency, no time for process" | Systematic debugging is FASTER than guess-and-check thrashing. |
-| "Just try this first, then investigate" | First fix sets the pattern. Do it right from the start. |
-| "I'll write test after confirming fix works" | Untested fixes don't stick. Test first proves it. |
-| "Multiple fixes at once saves time" | Can't isolate what worked. Causes new bugs. |
-| "Reference too long, I'll adapt the pattern" | Partial understanding guarantees bugs. Read it completely. |
-| "I see the problem, let me fix it" | Seeing symptoms ≠ understanding root cause. |
-| "One more fix attempt" (after 2+ failures) | 3+ failures = architectural problem. Question pattern, don't fix again. |
+| 핑계 | 현실 |
+|------|------|
+| "문제 간단하니 프로세스 필요 없다" | 간단한 문제도 근본 원인이 있다. 간단한 버그는 빠르다. |
+| "긴급, 프로세스 할 시간 없다" | 체계적 디버깅이 추측-확인 스래싱보다 빠르다. |
+| "일단 시도하고 나중에 조사" | 첫 수정이 패턴 설정한다. 처음부터 올바르게 하자. |
+| "수정 작동 확인하고 나중에 테스트 작성" | 검증 안 된 수정은 안 붙는다. 테스트 먼저 증명한다. |
+| "여러 수정 동시에 시간 절약" | 뭐가 작동했는지 고립 불가. 새 버그 만든다. |
+| "참조 너무 길어, 패턴 적응하겠다" | 부분 이해는 버그 보장. 완전히 읽기. |
+| "문제가 보여" | 증상 보기 ≠ 근본 원인 이해. |
+| "한 번 더 시도" (2개 이상 실패 후) | 3개 이상 실패 = 아키텍처 문제. 다시 고치지 말고 패턴 질문하기. |
 
-## Quick Reference
+## 빠른 참조
 
-| Phase | Key Activities | Success Criteria |
-|-------|---------------|------------------|
-| **1. Root Cause** | Read errors, reproduce, check changes, gather evidence | Understand WHAT and WHY |
-| **2. Pattern** | Find working examples, compare | Identify differences |
-| **3. Hypothesis** | Form theory, test minimally | Confirmed or new hypothesis |
-| **4. Implementation** | Create test, fix, verify | Bug resolved, tests pass |
+| Phase | 핵심 활동 | 성공 기준 |
+|-------|----------|----------|
+| **1. 근본 원인** | 에러 읽기, 재현, 변경 확인, 증거 수집 | WHAT과 WHY 이해 |
+| **2. 패턴** | 작동 예시 찾기, 비교 | 차이점 확인 |
+| **3. 가설** | 이론 세우기, 최소로 테스트 | 확인 또는 새 가설 |
+| **4. 구현** | 테스트 만들기, 고치기, 검증 | 버그 해결, 테스트 통과 |
 
-## When Process Reveals "No Root Cause"
+## 프로세스가 "근본 원인 없음" 드러낼 때
 
-If systematic investigation reveals issue is truly environmental, timing-dependent, or external:
+체계적 조사가 문제가 정말 환경, 타이밍-의존, 또는 외부라고 드러내면:
 
-1. You've completed the process
-2. Document what you investigated
-3. Implement appropriate handling (retry, timeout, error message)
-4. Add monitoring/logging for future investigation
+1. 프로세스 완료했다
+2. 뭘 조사했는지 문서화
+3. 적절한 처리 구현 (재시도, 타임아웃, 에러 메시지)
+4. 향후 조사를 위해 모니터링/로깅 추가
 
-**But:** 95% of "no root cause" cases are incomplete investigation.
+**하지만:** "근본 원인 없음" 케이스 95%는 불완전한 조사다.
 
-## Supporting Techniques
+## 지원하는 기법
 
-These techniques are part of systematic debugging and available in this directory:
+이들 기법은 체계적 디버깅 일부이고 이 디렉토리에서 가능:
 
-- **`root-cause-tracing.md`** - Trace bugs backward through call stack to find original trigger
-- **`defense-in-depth.md`** - Add validation at multiple layers after finding root cause
-- **`condition-based-waiting.md`** - Replace arbitrary timeouts with condition polling
+- **`root-cause-tracing.md`** - 호출 스택 통해 역추적해서 원래 트리거 찾기
+- **`defense-in-depth.md`** - 근본 원인 찾은 후 여러 레이어에서 검증 추가
+- **`condition-based-waiting.md`** - 임의 타임아웃 대신 조건 폴링으로 교체
 
-**Related skills:**
-- **superpowers:test-driven-development** - For creating failing test case (Phase 4, Step 1)
-- **superpowers:verification-before-completion** - Verify fix worked before claiming success
+**관련 스킬:**
+- **superpowers:test-driven-development** - 실패 테스트 케이스 작성 (Phase 4, Step 1)
+- **superpowers:verification-before-completion** - 수정 작동 검증 (시도 전 성공 주장)
 
-## Real-World Impact
+## 실제 영향
 
-From debugging sessions:
-- Systematic approach: 15-30 minutes to fix
-- Random fixes approach: 2-3 hours of thrashing
-- First-time fix rate: 95% vs 40%
-- New bugs introduced: Near zero vs common
+디버깅 세션에서:
+- 체계적 접근: 15-30분 고침
+- 무작위 수정 접근: 2-3시간 스래싱
+- 첫 번째 수정 성공률: 95% 대 40%
+- 새로운 버그 도입: 거의 없음 대 흔함

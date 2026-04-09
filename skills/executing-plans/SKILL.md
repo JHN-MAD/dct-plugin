@@ -1,84 +1,84 @@
 ---
 name: executing-plans
-description: Use when you have a written implementation plan to execute in a separate session with review checkpoints
+description: 작성된 구현 계획을 실행해야 할 때, 별도 세션에서 검토 체크포인트와 함께 사용
 ---
 
 # Executing Plans
 
-## Overview
+## 개요
 
-Load plan, review critically, execute tasks in batches, report for review between batches.
+계획 로드, 비판적으로 검토, 배치로 작업 실행, 배치 간 검토를 위해 보고.
 
-**Core principle:** Batch execution with checkpoints for architect review.
+**핵심 원칙:** 아키텍트 검토를 위한 체크포인트 있는 배치 실행.
 
-**Announce at start:** "I'm using the executing-plans skill to implement this plan."
+**시작할 때 발표:** "나는 executing-plans 스킬을 사용해서 이 계획을 구현하고 있다."
 
-## The Process
+## 프로세스
 
-### Step 1: Load and Review Plan
-1. Read plan file
-2. Review critically - identify any questions or concerns about the plan
-3. If concerns: Raise them with your human partner before starting
-4. If no concerns: Create TodoWrite and proceed
+### Step 1: 계획 로드 및 검토
+1. 계획 파일 읽기
+2. 비판적으로 검토 - 계획에 대한 질문이나 우려 확인
+3. 우려 있으면: 시작하기 전에 인간 파트너에게 제기
+4. 우려 없으면: TodoWrite 만들고 진행
 
-### Step 2: Execute Batch
-**Default: First 3 tasks**
+### Step 2: 배치 실행
+**기본: 처음 3개 작업**
 
-For each task:
-1. Mark as in_progress
-2. Follow each step exactly (plan has bite-sized steps)
-3. Run verifications as specified
-4. Mark as completed
+각 작업마다:
+1. in_progress로 표시
+2. 각 단계를 정확히 따르기 (계획이 작은 단위의 단계)
+3. 지정된 검증 실행
+4. completed로 표시
 
-### Step 3: Report
-When batch complete:
-- Show what was implemented
-- Show verification output
-- Say: "Ready for feedback."
+### Step 3: 보고
+배치 완료 시:
+- 구현된 것 보여주기
+- 검증 출력 보여주기
+- 말하기: "피드백 준비 완료."
 
-### Step 4: Continue
-Based on feedback:
-- Apply changes if needed
-- Execute next batch
-- Repeat until complete
+### Step 4: 계속
+피드백에 따라:
+- 필요하면 변경 적용
+- 다음 배치 실행
+- 완료될 때까지 반복
 
-### Step 5: Complete Development
+### Step 5: 개발 완료
 
-After all tasks complete and verified:
-- Announce: "I'm using the finishing-a-development-branch skill to complete this work."
-- **REQUIRED SUB-SKILL:** Use superpowers:finishing-a-development-branch
-- Follow that skill to verify tests, present options, execute choice
+모든 작업 완료하고 검증 후:
+- 발표: "나는 finishing-a-development-branch 스킬을 사용해서 이 작업을 완료하고 있다."
+- **필수 SUB-SKILL:** `superpowers:finishing-a-development-branch` 사용
+- 그 스킬을 따라 테스트 검증, 옵션 제시, 선택 실행
 
-## When to Stop and Ask for Help
+## 배치 중 멈춰야 할 때
 
-**STOP executing immediately when:**
-- Hit a blocker mid-batch (missing dependency, test fails, instruction unclear)
-- Plan has critical gaps preventing starting
-- You don't understand an instruction
-- Verification fails repeatedly
+**즉시 실행 중단:**
+- 배치 중 blocker 맞음 (누락된 의존성, 테스트 실패, 지시 불명확)
+- 계획이 시작을 막는 비판적 격차 있음
+- 지시를 이해하지 못함
+- 검증이 반복적으로 실패
 
-**Ask for clarification rather than guessing.**
+**추측하기보다 명확화 요청.**
 
-## When to Revisit Earlier Steps
+## 이전 단계로 돌아갈 때
 
-**Return to Review (Step 1) when:**
-- Partner updates the plan based on your feedback
-- Fundamental approach needs rethinking
+**Review (Step 1)로 돌아갈 때:**
+- 파트너가 피드백에 따라 계획 업데이트
+- 근본적 접근이 재검토 필요
 
-**Don't force through blockers** - stop and ask.
+**Blocker를 강제하지 말 것** - 멈추고 물어보기.
 
-## Remember
-- Review plan critically first
-- Follow plan steps exactly
-- Don't skip verifications
-- Reference skills when plan says to
-- Between batches: just report and wait
-- Stop when blocked, don't guess
-- Never start implementation on main/master branch without explicit user consent
+## 기억할 것
+- 먼저 계획을 비판적으로 검토하기
+- 계획 단계를 정확히 따르기
+- 검증 건너뛰지 말기
+- 계획이 스킬을 참조할 때 그 스킬 사용
+- 배치 간: 단순히 보고하고 대기
+- Blocker 있으면 멈추기, 추측하지 말기
+- 명시적 사용자 동의 없이 main/master 브랜치에서 구현 시작하지 말기
 
-## Integration
+## 통합
 
-**Required workflow skills:**
-- **superpowers:using-git-worktrees** - REQUIRED: Set up isolated workspace before starting
-- **superpowers:writing-plans** - Creates the plan this skill executes
-- **superpowers:finishing-a-development-branch** - Complete development after all tasks
+**필수 워크플로우 스킬:**
+- **superpowers:using-git-worktrees** - 필수: 시작하기 전에 고립된 작업공간 설정
+- **superpowers:writing-plans** - 이 스킬이 실행하는 계획 만들기
+- **superpowers:finishing-a-development-branch** - 모든 작업 완료 후 개발 완료
