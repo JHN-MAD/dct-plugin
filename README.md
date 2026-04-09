@@ -1,6 +1,6 @@
 # DCT Claude Code Plugin
 
-데이터 컨설팅 팀(DCT)의 AI Native 개발 환경 온보딩 및 **Jira/GitHub 워크플로우 자동화** 플러그인.
+데이터 컨설팅 팀(DCT)의 AI Native 개발 환경 온보딩 및 **Jira 워크플로우 자동화** 플러그인. GitHub 연동은 `gh` CLI + SSH 조합으로 단순화했다.
 
 ## 이게 뭐예요?
 
@@ -11,7 +11,7 @@
 ### 커맨드
 | 커맨드 | 설명 |
 |--------|------|
-| `/dct` | 신규 팀원 온보딩 — MCP(Atlassian/GitHub) 설정, SSH 키, 팀 CLAUDE.md 배포 |
+| `/dct` | 신규 팀원 온보딩 — Atlassian MCP 설정, SSH 키, `gh auth login`, 팀 CLAUDE.md/rules 배포 (Slack/AWS 선택) |
 | `/dct-plan <DCTC-번호> [설명]` | 플랜 작성 → Jira 업로드 → `feature/DCTC-N` 브랜치 진입 (구현은 자유) |
 | `/dct-complete <DCTC-번호>` | 결과 요약 → Jira 완료 댓글 → PR 생성 (사용자 확인 후) |
 | `/dct-job <DCTC-번호> <타입> <설명>` | 플랜→구현→검증→PR 완전 자동화 파이프라인 |
@@ -75,28 +75,33 @@ Claude Code 내에서:
 
 ## MCP 설정
 
-`settings-example.json` 이 리포 루트에 있습니다. `/dct` 커맨드가 이 파일을 참조하여 사용자의 `~/.claude/settings.json` 으로 복사하고, 다음 MCP 서버를 설정하도록 안내합니다:
+`settings-example.json` 이 리포 루트에 있습니다. 사용자가 이 파일에 값을 채우면 `/dct` 커맨드가 `jq` 로 `~/.claude/settings.json` 에 **병합**합니다 (기존 설정 보존).
 
-- **mcp-atlassian** (uvx) — Jira + Confluence
-- **github** (Docker + PAT) — `github-mcp-server`
+- **mcp-atlassian** (uvx) — Jira + Confluence (필수)
+- **slack** (korotovsky/slack-mcp-server, xoxc/xoxd) — 선택
+- GitHub 은 MCP 를 쓰지 않고 **`gh` CLI + SSH** 로 처리
+- AWS 는 MCP 없이 **`aws` CLI** 로 처리 (Claude 가 Bash 로 호출)
 
 ## 구조
 
 ```
 claude-team-config/
 ├── .claude-plugin/
-│   └── plugin.json          # 플러그인 메타
+│   ├── plugin.json          # 플러그인 매니페스트
+│   └── marketplace.json     # /plugin marketplace add 지원
 ├── commands/
-│   ├── dct.md               # /dct
-│   ├── dct-job.md           # /dct-job
+│   ├── dct.md               # /dct — 온보딩
+│   ├── dct-plan.md          # /dct-plan — 플랜 + 브랜치 진입
+│   ├── dct-complete.md      # /dct-complete — 마무리 + PR
+│   ├── dct-job.md           # /dct-job — 완전 자동화 래퍼
 │   └── sc/                  # /sc:* 6개
-├── skills/                  # 9개 스킬 (dct-* 2개 + 공통 7개)
+├── skills/                  # dct-onboarding, dct-jira-workflow + 품질 스킬 10개
 ├── rules/                   # 팀 기본 규칙 8개
 ├── core/
 │   └── CLAUDE.md            # 사용자 전역 CLAUDE.md 템플릿
 ├── templates/
-│   └── project-claude.md.template   # 프로젝트별 CLAUDE.md 템플릿
-├── settings-example.json    # MCP 설정 예시
+│   └── project-claude.md.template
+├── settings-example.json    # Atlassian/Slack MCP 설정 템플릿
 └── README.md
 ```
 

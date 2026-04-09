@@ -2,11 +2,11 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin.json",
   "name": "dct-claude-plugin",
   "version": "0.1.0",
-  "description": "데이터 컨설팅 팀(DCT) Claude Code 온보딩 및 Jira/GitHub 워크플로우 플러그인",
+  "description": "데이터 컨설팅 팀(DCT) Claude Code 온보딩 및 Jira 워크플로우 자동화 플러그인 (gh CLI + SSH 기반)",
   "author": {
     "name": "Data Consulting Team",
     "url": "https://github.com/hyunseok-blue/claude-team-config"
   },
-  "keywords": ["dct", "jira", "github", "onboarding", "team-workflow", "korean"],
+  "keywords": ["dct", "jira", "atlassian", "onboarding", "team-workflow", "korean"],
   "license": "MIT"
 }

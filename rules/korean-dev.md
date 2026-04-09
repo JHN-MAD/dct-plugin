@@ -7,7 +7,10 @@
 - 기술 용어는 원어 그대로 사용 (예: "디플로이" 대신 deploy, "리팩토링" 대신 refactoring)
 
 ## 코드 스타일 및 컨벤션
-- 커밋 메시지/PR 제목은 한국어로 작성 (컨벤셔널 prefix 없이 간결하게)
+- 커밋 메시지/PR 제목은 **한글 본문 + 영어 prefix·기술 용어** 혼용
+  - prefix: `feat`, `fix`, `refactor`, `chore`, `docs`, `test` 등 영어 유지
+  - 본문: 한국어로 간결하게 (예: `fix: 로그인 버튼 클릭 이슈 해결`, `feat: DCT 온보딩 스킵 로직 추가`)
+  - deploy, refactor, build 등 개발/기술 용어는 영어 원어 유지
 - 파일/폴더명에 한글 사용 금지
 - 타임존 관련 작업 시 `Asia/Seoul` (KST, UTC+9) 기준 확인
 

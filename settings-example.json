@@ -13,18 +13,13 @@
         "CONFLUENCE_API_TOKEN": "YOUR_CONFLUENCE_API_TOKEN_HERE"
       }
     },
-    "github": {
-      "command": "docker",
-      "args": [
-        "run",
-        "-i",
-        "--rm",
-        "-e",
-        "GITHUB_PERSONAL_ACCESS_TOKEN",
-        "ghcr.io/github/github-mcp-server"
-      ],
+    "slack": {
+      "command": "npx",
+      "args": ["-y", "@korotovsky/slack-mcp-server"],
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR_GITHUB_PAT_HERE"
+        "SLACK_MCP_XOXC_TOKEN": "YOUR_SLACK_XOXC_TOKEN_HERE",
+        "SLACK_MCP_XOXD_TOKEN": "YOUR_SLACK_XOXD_TOKEN_HERE",
+        "SLACK_MCP_ADD_MESSAGE_TOOL": "false"
       }
     }
   }

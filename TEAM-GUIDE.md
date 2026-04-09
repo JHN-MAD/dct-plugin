@@ -5,7 +5,7 @@
 데이터 컨설팅 팀(DCT)이 Claude Code를 **같은 품질·같은 워크플로우**로 쓸 수 있게 만든 플러그인입니다.
 
 설치하면:
-- **`/dct` 온보딩 커맨드** — MCP(Jira/Confluence/GitHub) 설정과 SSH 키 생성을 단계별로 안내
+- **`/dct` 온보딩 커맨드** — Atlassian MCP 설정, SSH 키, `gh auth login`, 팀 기본 설정을 단계별로 안내 (Slack/AWS 선택)
 - **`/dct-job` Jira 워크플로우** — 카드 번호만 주면 브랜치 생성 → 플랜 → 구현 → Jira 댓글까지 자동 실행
 - **팀 기본 규칙 8개** — 한국어 응답, 커밋 컨벤션, 브랜치 네이밍, Python/AWS/문서 동기화 등
 - **`/sc:` 커맨드 6개** — analyze/implement/troubleshoot/improve/test/build
@@ -39,11 +39,12 @@ claude --plugin ~/dct-plugin
 
 ## 온보딩 체크리스트 (`/dct` 가 안내)
 
-1. **Atlassian MCP** — Jira API 토큰 발급, `settings.json` 설정
-2. **GitHub MCP** — PAT 발급, `github-mcp-server` Docker 설정
-3. **GitHub SSH 키** — `dct` 네임스페이스로 키 생성 및 등록
-4. **팀 CLAUDE.md 배포** — `~/.claude/CLAUDE.md` + `~/.claude/rules/*.md` 8개 복사
-5. **최종 점검** — MCP 연결 확인, 스모크 테스트
+1. **Atlassian MCP** — Jira/Confluence API 토큰 발급, `settings.json` 병합 (기존 설정 보존)
+2. **GitHub SSH 키** — 기존 키 있으면 재사용, 없으면 기본 `id_ed25519` 생성
+3. **`gh auth login`** — SSH 프로토콜로 OAuth 인증 (이미 로그인돼 있으면 스킵)
+4. **팀 CLAUDE.md 배포** — `~/.claude/CLAUDE.md`, `~/.claude/rules/*.md` 8개 (기존 파일 있으면 건너뛰기)
+5. **최종 점검** — MCP 연결, `gh auth status`, 파일 존재 확인
+6. **선택** — Slack MCP (xoxc/xoxd), AWS CLI (`aws configure`)
 
 ## 일상 워크플로우
 
