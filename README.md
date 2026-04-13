@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/madobi-community.png" alt="우린 공동체니까" width="300" />
+  <img src="assets/madobi-community.jpeg" alt="DCT Plugin" width="480" />
 </p>
 
 # DCT Claude Code Plugin
