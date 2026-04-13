@@ -9,9 +9,11 @@ description: AWS Secrets Manager 에서 Slack 봇 토큰을 다시 fetch 해 ~/.
 
 ## 언제 사용하나
 
-- Slack MCP 가 `invalid_auth` 또는 `token_expired` 에러를 반환할 때
-- 팀에서 봇 토큰을 로테이션한 직후
-- `/dct-slack` 전송이 갑자기 실패할 때
+> **참고**: 봇 토큰(`xoxb-`)은 사실상 영구 토큰이다. 시간 경과로 만료되지 않으므로 **일상적으로 이 커맨드를 실행할 필요는 없다.** 아래의 드문 상황에서만 사용.
+
+- Secrets Manager 의 `prod/gen-ai/slack` 값이 **교체**됐을 때 (앱 재설치, 보안 로테이션)
+- 로컬 `~/.claude.json` 이 **손상/초기화**되어 slack MCP 설정이 사라졌을 때
+- Slack MCP 가 `invalid_auth` 에러를 반환할 때 (봇 앱 revoke 등 극히 드문 경우)
 
 ## 실행 방식
 
