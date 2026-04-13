@@ -85,6 +85,6 @@ cp ~/dct-plugin/templates/project-claude.md.template .claude/CLAUDE.md
 ```
 
 ## 문제가 있다면
-- 기존 `~/.claude/CLAUDE.md` 는 `/dct` 실행 시 `.bak-<timestamp>` 로 자동 백업됩니다
+- 기존 `~/.claude/CLAUDE.md` 가 있으면 `/dct` 는 **건너뜁니다** (덮어쓰지 않음). 수동 병합이 필요하면 플러그인의 `core/CLAUDE.md` 참고
 - MCP 연결 실패 시 `~/.claude/settings.json` 의 JSON 문법/토큰을 먼저 확인
 - 이슈 리포트: https://github.com/hyunseok-blue/claude-team-config/issues

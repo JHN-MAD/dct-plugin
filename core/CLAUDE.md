@@ -8,6 +8,7 @@
 - `~/.claude/rules/personal.md` — 사용 정책 관련 금지사항
 - `~/.claude/rules/performance.md` — 모델 선택, 컨텍스트 관리
 - `~/.claude/rules/agents.md` — 서브에이전트 위임 기준
+- `~/.claude/rules/read-before-edit.md` — 코드 수정 전 반드시 파일 읽기 (추측 수정 금지)
 
 ## 상황별 (트리거 시 Read)
 - `~/.claude/rules/python.md` — Python(.py, pytest, poetry 등) 작업 시

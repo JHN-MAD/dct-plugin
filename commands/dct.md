@@ -79,7 +79,7 @@ jq '.hooks.PreToolUse // empty' ~/.claude/settings.json 2>/dev/null | grep -q 'r
 
 1. 기존 `~/.claude.json` 존재 여부 확인
    - **존재**: `cp ~/.claude.json ~/.claude.json.bak-$(date +%Y%m%d-%H%M%S)` 로 백업. **절대 `Write` 로 통째 덮어쓰지 말 것** (하단 "절대 규칙" 참조). 이 파일에는 Claude Code 의 프로젝트별 히스토리, OAuth 토큰, 플러그인 메타 등 수십 개 최상위 키가 있어 손상 시 복구 불가능
-   - **없음**: `echo '{}' > ~/.claude.json` 로 빈 객체 초기화 후 아래 병합 진행
+   - **없음**: **중단**. 사용자에게 "Claude Code 를 먼저 한 번 실행해 `~/.claude.json` 초기 설정을 생성한 뒤 `/dct` 를 다시 실행하세요" 안내. 빈 객체로 수동 생성하지 말 것 (기존 사용자가 파일을 실수로 삭제한 경우 빈 객체 생성이 복구 불가능한 손실을 유발)
 2. `settings-example.json` 에서 Atlassian 플레이스홀더(`YOUR_..._HERE`, `your-email@example.com` 등)가 남아있는지 검증 — 남아있으면 중단하고 사용자에게 재편집 요청
 3. **병합 방식으로 반영** (`jq` 사용):
    ```bash
@@ -130,6 +130,8 @@ gh auth login
 - **`~/.claude/CLAUDE.md` 있음** → **건너뛰기**. 사용자에게 "기존 CLAUDE.md 가 존재하여 배포를 건너뜁니다. 필요하면 플러그인의 `core/CLAUDE.md` 내용을 수동으로 참고해 병합하세요" 안내만 출력
 - **`~/.claude/rules/` 디렉터리 없음** → 플러그인 `rules/*.md` 전체 복사
 - **`~/.claude/rules/` 존재** → 파일별로 검사, **없는 파일만** 추가 복사. 기존 파일은 **덮어쓰지 않음**
+
+> **안내**: 배포되는 규칙은 **DCT 팀 프로젝트 전용**이다 (예: `team-workflow.md` 의 "main PR 금지, dev 기본" 등). 개인 프로젝트에는 프로젝트별 `.claude/CLAUDE.md` 에서 override 가능하므로 전역 규칙이 개인 작업을 방해하지 않음을 안내한다.
 
 ### 6. AWS CLI (선택, Slack MCP 전제 조건)
 AWS 리소스 접근이 필요하거나 **7단계 Slack MCP 를 쓸 계획이면 필수**. Slack 봇 토큰을 AWS Secrets Manager 에서 가져오기 때문.

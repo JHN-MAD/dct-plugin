@@ -100,7 +100,7 @@ AWS 리소스 접근이 필요한 경우만. MCP 는 설치하지 않고 CLI 만
 - [ ] 한 번 설정하면 모든 AWS SDK/CLI/Claude Bash 호출에서 공유됨
 
 ### F. 최종 검증
-- [ ] `jq '.mcpServers | keys' ~/.claude/settings.json` 로 MCP 목록 확인 (값은 출력 금지)
+- [ ] `jq '.mcpServers | keys' ~/.claude.json` 로 MCP 목록 확인 (값은 출력 금지, 반드시 `~/.claude.json` 대상)
 - [ ] `gh auth status` 로 GitHub 인증 확인
 - [ ] `~/.claude/CLAUDE.md` 와 `~/.claude/rules/` 존재 확인
 - [ ] `/dct-plan DCTC-TEST` 같은 명령으로 스모크 테스트 (실제 카드가 없어도 MCP 호출 흐름 확인 가능)

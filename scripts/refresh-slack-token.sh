@@ -39,10 +39,11 @@ fi
 
 echo "✅ 토큰 조회 성공 (prefix: ${TOKEN:0:5}..., length: ${#TOKEN})"
 
-# ~/.claude.json 이 없으면 빈 객체로 초기화
+# ~/.claude.json 이 없으면 중단 (빈 객체로 초기화하면 기존 설정 전부 소실 위험)
 if [ ! -f "$TARGET" ]; then
-  echo '{}' > "$TARGET"
-  echo "ℹ️  $TARGET 신규 생성"
+  echo "❌ $TARGET 파일이 없습니다."
+  echo "   Claude Code 를 먼저 한 번 실행해 초기 설정을 생성한 뒤 다시 시도하세요."
+  exit 1
 fi
 
 # 백업

@@ -79,7 +79,7 @@ Claude Code 내에서:
 
 ## MCP 설정
 
-`settings-example.json` 이 리포 루트에 있습니다. 사용자가 이 파일에 값을 채우면 `/dct` 커맨드가 `jq` 로 `~/.claude/settings.json` 에 **병합**합니다 (기존 설정 보존).
+`settings-example.json` 이 리포 루트에 있습니다. 사용자가 이 파일에 값을 채우면 `/dct` 커맨드가 `jq` 로 `~/.claude.json` (Claude Code 의 실제 MCP 레지스트리) 에 **병합**합니다 (기존 설정 보존).
 
 - **mcp-atlassian** (uvx) — Jira + Confluence (필수)
 - **slack** (korotovsky/slack-mcp-server, xoxc/xoxd) — 선택
