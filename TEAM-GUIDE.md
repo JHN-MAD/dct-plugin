@@ -23,13 +23,13 @@
 
 ```bash
 # 로컬 개발 모드
-git clone https://github.com/hyunseok-blue/claude-team-config.git ~/dct-plugin
+git clone https://github.com/JHN-MAD/dct-plugin.git ~/dct-plugin
 claude --plugin ~/dct-plugin
 ```
 
 또는 Claude Code 내에서:
 ```
-/plugin marketplace add https://github.com/JHN-MAD/claude-team-config
+/plugin marketplace add https://github.com/JHN-MAD/dct-plugin
 /plugin install dct-claude-plugin
 ```
 
@@ -88,4 +88,4 @@ cp ~/dct-plugin/templates/project-claude.md.template .claude/CLAUDE.md
 ## 문제가 있다면
 - 기존 `~/.claude/CLAUDE.md` 가 있으면 `/dct` 는 **건너뜁니다** (덮어쓰지 않음). 수동 병합이 필요하면 플러그인의 `core/CLAUDE.md` 참고
 - MCP 연결 실패 시 `~/.claude/settings.json` 의 JSON 문법/토큰을 먼저 확인
-- 이슈 리포트: https://github.com/hyunseok-blue/claude-team-config/issues
+- 이슈 리포트: https://github.com/JHN-MAD/dct-plugin/issues

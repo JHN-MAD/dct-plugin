@@ -5,7 +5,7 @@
   "description": "데이터 컨설팅 팀(DCT) Claude Code 온보딩 및 Jira 워크플로우 자동화 플러그인 (gh CLI + SSH 기반)",
   "author": {
     "name": "Data Consulting Team",
-    "url": "https://github.com/hyunseok-blue/claude-team-config"
+    "url": "https://github.com/JHN-MAD/dct-plugin"
   },
   "keywords": ["dct", "jira", "atlassian", "onboarding", "team-workflow", "korean"],
   "license": "MIT"

@@ -51,14 +51,14 @@
 
 ### 방법 1: 플러그인 디렉토리 참조 (로컬 개발)
 ```bash
-git clone https://github.com/hyunseok-blue/claude-team-config.git ~/dct-plugin
+git clone https://github.com/JHN-MAD/dct-plugin.git ~/dct-plugin
 claude --plugin ~/dct-plugin
 ```
 
 ### 방법 2: marketplace 등록 후 설치 (권장)
 Claude Code 내에서:
 ```
-/plugin marketplace add https://github.com/JHN-MAD/claude-team-config
+/plugin marketplace add https://github.com/JHN-MAD/dct-plugin
 /plugin install dct-claude-plugin
 ```
 
@@ -113,5 +113,5 @@ claude-team-config/
 ```
 
 ## 문의/기여
-- 리포: https://github.com/hyunseok-blue/claude-team-config
+- 리포: https://github.com/JHN-MAD/dct-plugin
 - 이슈/PR 환영
