@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/madobi-treadmill.png" alt="매도비 트레드밀 운동하기" width="300" />
+  <img src="assets/madobi-community.png" alt="우린 공동체니까" width="300" />
 </p>
 
 # DCT Claude Code Plugin
