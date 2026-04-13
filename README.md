@@ -55,10 +55,11 @@ git clone https://github.com/hyunseok-blue/claude-team-config.git ~/dct-plugin
 claude --plugin ~/dct-plugin
 ```
 
-### 방법 2: `/plugin install` (권장)
+### 방법 2: marketplace 등록 후 설치 (권장)
 Claude Code 내에서:
 ```
-/plugin install <plugin-source>
+/plugin marketplace add https://github.com/JHN-MAD/claude-team-config
+/plugin install dct-claude-plugin
 ```
 
 설치 후 Claude Code를 **재시작**하고 `/dct` 를 실행하세요.

@@ -29,7 +29,8 @@ claude --plugin ~/dct-plugin
 
 또는 Claude Code 내에서:
 ```
-/plugin install <plugin-source>
+/plugin marketplace add https://github.com/JHN-MAD/claude-team-config
+/plugin install dct-claude-plugin
 ```
 
 설치 후 Claude Code를 **재시작**하고 아래를 실행하세요:
