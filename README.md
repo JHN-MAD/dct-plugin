@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/madobi-treadmill.png" alt="매도비 트레드밀 운동하기" width="300" />
+</p>
+
 # DCT Claude Code Plugin
 
 데이터 컨설팅 팀(DCT)의 AI Native 개발 환경 온보딩 및 **Jira 워크플로우 자동화** 플러그인. GitHub 연동은 `gh` CLI + SSH 조합으로 단순화했다.
