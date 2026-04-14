@@ -43,7 +43,8 @@ Jira 카드 작업을 **마무리**하는 커맨드. 작업 결과를 요약해 
 - 사용자에게 요약 미리보기 제시 → 승인/수정
 
 ### 4. Jira 완료 댓글 등록
-- `mcp__mcp-atlassian__jira_add_comment` 로 등록
+- **댓글에 표가 포함되면** `jira-adf-table` 스킬로 ADF 변환 후 등록 (컬럼 너비가 내용 비례로 자동 배분). 표가 없으면 markdown 그대로
+- `mcp__mcp-atlassian__jira_add_comment` 로 등록 (ADF dict 거부 시 curl Jira REST v3 fallback — 스킬 참조)
 - 댓글 포맷:
   ```
   ✅ 작업 완료 요약

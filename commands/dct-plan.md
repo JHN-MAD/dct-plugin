@@ -40,6 +40,7 @@ Jira 카드 기반 작업을 **시작**하는 커맨드. 플랜 작성과 브랜
 
 ### 4. Jira 업로드
 - 승인된 플랜을 Jira 카드의 **description(설명) 필드**에 기록 (기존 설명이 있으면 병합 또는 사용자 확인 후 갱신)
+- **플랜에 표가 포함되면** `jira-adf-table` 스킬로 ADF 변환 (컬럼 너비가 내용 길이에 비례하도록 colwidth 자동 계산). 표가 없으면 markdown 그대로 전달
 - 도구: `mcp__mcp-atlassian__jira_update_issue` (`fields.description` 업데이트)
 - description 포맷 (Markdown):
   ```
