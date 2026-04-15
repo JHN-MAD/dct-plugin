@@ -2,13 +2,22 @@
 name: dct-plan
 description: Jira DCTC 카드 기반 작업 진입 — 플랜 작성, Jira 업로드, feature 브랜치 체크아웃까지 수행 (구현은 유저 자유)
 argument-hint: <DCTC-번호> ["<작업 설명>" | <파일경로>]
+effort: max
 ---
 
 # /dct-plan — 플랜 작성 & 진입
 
 Jira 카드 기반 작업을 **시작**하는 커맨드. 플랜 작성과 브랜치 진입까지만 수행하고, 이후 구현은 사용자가 자유롭게 진행한다(다른 플러그인/도구 조합 가능).
 
-> **🧠 Reasoning Effort: MAX** — 이 커맨드는 **ultrathink** 모드로 실행된다. 카드 범위 판단, 단계 분해, 영향 파일 예측, 검증 전략 설계 등 모든 플래닝 과정에서 최대 추론 예산을 사용해 깊이 있게 사고한 뒤 산출물을 작성한다. (키워드: `ultrathink` → deep reasoning)
+> **🧠 Reasoning Effort: MAX + ultrathink** — frontmatter `effort: max` (Opus 4.6 전용) + 본문 `ultrathink` 키워드로 최대 추론 예산을 사용한다. 카드 범위 판단, 단계 분해, 영향 파일 예측, 검증 전략 설계 전 과정에서 깊이 있게 사고한 뒤 산출물을 작성한다.
+
+## 🚨 필수 선행 액션 — Plan Mode 진입
+
+이 커맨드의 **맨 첫 번째 액션은 반드시 `EnterPlanMode` 툴 호출**이다. Claude Code 공식 frontmatter 에는 plan mode 자동진입 필드가 없으므로, 본문 지시에 따라 Claude 가 명시적으로 호출해야 한다.
+
+- **plan mode 진입 이유**: 승인되지 않은 상태로 Jira description 변경, 브랜치 체크아웃 등 mutation 을 일으키면 안 됨
+- **plan mode 이탈**: 플랜이 사용자 승인을 받은 직후 `ExitPlanMode` 로 벗어나 Jira 업로드 + 브랜치 작업 수행
+- **plan mode 중 허용**: 카드 조회, 파일 Read, Grep/Glob 탐색 등 **읽기 전용 작업만**
 
 ## 사용법
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.1 (2026-04-14)
+
+### Fixed
+- **`/dct-plan` 실제 plan mode 진입**: Claude Code frontmatter 에 `mode: plan` 필드는 존재하지 않음 (공식 지원 필드 아님). 본문에 **"첫 액션으로 `EnterPlanMode` 툴 호출 필수"** 지시 추가로 실제 plan mode 진입 보장
+- `/dct-plan` frontmatter 에 `effort: max` 추가 (Opus 4.6 전용 최대 추론 예산)
+- `/dct-job` Phase A 에도 동일한 `EnterPlanMode` 첫 액션 지시 추가
+
 ## 0.2.0 (2026-04-14)
 
 ### Added
