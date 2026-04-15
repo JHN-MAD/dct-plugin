@@ -14,6 +14,7 @@
 - `~/.claude/rules/python.md` — Python(.py, pytest, poetry 등) 작업 시
 - `~/.claude/rules/team-workflow.md` — GitHub 브랜치/커밋, Jira, Confluence 작업 시
 - `~/.claude/rules/aws.md` — AWS/aws-cli/IAM/S3/EC2 관련 작업 시
+- `~/.claude/rules/gcp.md` — GCP/gcloud/Cloud Storage/BigQuery 관련 작업 시
 - `~/.claude/rules/doc-updates.md` — 작업 완료 직전 (문서 동기화 체크)
 
 ## 운영 원칙

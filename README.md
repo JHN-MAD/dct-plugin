@@ -41,7 +41,7 @@
 - `webapp-testing` — 웹앱 테스트 (Playwright 기반)
 
 ### 팀 기본 규칙 (`rules/`)
-플러그인 설치 후 `/dct` 실행 시 `~/.claude/rules/` 로 배포되는 8개 규칙:
+플러그인 설치 후 `/dct` 실행 시 `~/.claude/rules/` 로 배포되는 9개 규칙:
 - `korean-dev.md` — 한국어 응답/커밋, 코드는 영어 유지
 - `personal.md` — 사용 정책
 - `performance.md` — 모델 선택, 컨텍스트 관리
@@ -49,6 +49,7 @@
 - `python.md` — Python 가이드
 - `team-workflow.md` — GitHub/Jira/Confluence 워크플로우
 - `aws.md` — AWS 작업 가이드
+- `gcp.md` — GCP/Cloud Storage 작업 가이드 (`gcloud storage` 우선)
 - `doc-updates.md` — 문서 동기화
 
 ## 설치

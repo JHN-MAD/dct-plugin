@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.3.0 (2026-04-14)
+
+### Added
+- **`/dct` 온보딩에 GCP CLI 섹션 (Step 7)** — Cloud Storage 중심 설정 가이드
+  - `gcloud auth login` + `gcloud auth application-default login` 2단계 인증
+  - 다중 프로젝트 대응 (named configuration 가이드 포함)
+  - `gcloud storage` 우선 사용 권장 (구 `gsutil` 대비 2~5배 빠름)
+  - 비용 주의사항 (egress, 재귀 조회, BigQuery 스캔량)
+- **`rules/gcp.md` 신규 규칙** — GCP/gcloud/Cloud Storage 작업 시 권장 패턴 + 금지사항
+  - IAM 권한 변경 금지, 서비스 계정 JSON 키 사용 지양, 토큰 출력 명령 금지
+  - Cloud Storage `gcloud storage` 우선, Cross-region egress 비용 경고
+- `core/CLAUDE.md` 규칙 인덱스에 `gcp.md` 등록
+
+### Changed
+- `/dct` 온보딩 단계 재번호 매김: Slack MCP 7→8, RTK 8→9, 최종점검 9→10
+- 환경 진단(Step 0) 에 GCP auth/project 체크 추가
+- README 규칙 목록 9개로 확장
+
 ## 0.2.1 (2026-04-14)
 
 ### Fixed
