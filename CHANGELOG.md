@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.4.0 (2026-04-16)
+
+### Added
+- **`/dct-job` 에 `/review` Phase 추가 (Phase C)** — 구현(Phase B) 직후 Claude Code 내장 `/review` 커맨드를 호출해 품질/보안/로직 정적 리뷰 수행. High/Critical 지적사항은 Phase 안에서 수정 루프 (최대 2회)
+- Phase 구조 재편: A(플랜) → B(구현) → **C(/review)** → D(검증) → E(마무리)
+- 중단 지점에 `/review` High/Critical 설계 판단 항목 추가
+
+### Changed
+- **권장 파이프라인 문서화**: `/dct-plan` → `/ultrawork` | `/autopilot` → `/review` → `/dct-complete`
+- `/dct-plan` 종료 메시지를 4단계 파이프라인 다이어그램으로 갱신
+- `/dct-job` "수동 분리 버전" 섹션을 4단계 파이프라인으로 갱신
+- README 빠른 시작에 완전 자동화(`/dct-job`) vs 수동 4단계 두 가지 경로 명시
+
+### Notes
+- `/review` 는 **Claude Code 네이티브 빌트인 커맨드** (DCT 플러그인의 `/dct-sc-review` 아님). 둘은 별도로 존재하며 빌트인 사용을 권장
+- 기존 `/dct-sc-review` 는 DCT 커스텀 리뷰 흐름용으로 유지
+
 ## 0.3.0 (2026-04-14)
 
 ### Added

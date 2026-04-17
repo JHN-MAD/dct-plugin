@@ -78,9 +78,21 @@ Claude Code 내에서:
 
 # 3. 온보딩 실행
 /dct
+```
 
-# 4. Jira 카드 작업 시작
+### Jira 카드 작업 — 완전 자동화
+한 커맨드로 논스톱 실행:
+```
 /dct-job DCTC-1808 feat "프론트 사이드바 애니메이션 개선"
+```
+내부 파이프라인: `planmode` → `ultrawork` → `/review` → 검증 → PR
+
+### Jira 카드 작업 — 수동 4단계 (권장, 도구 교체 자유)
+```
+/dct-plan DCTC-1808 "설명"      # 1. 플랜 + Jira 업로드 + 브랜치 진입
+/ultrawork  또는  /autopilot    # 2. 구현 (병렬 / 자율 — 상황에 맞게)
+/review                         # 3. Claude Code 내장 리뷰
+/dct-complete DCTC-1808         # 4. Jira 완료 댓글 + PR 생성
 ```
 
 ## MCP 설정
