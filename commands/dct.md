@@ -42,6 +42,9 @@ which rtk 2>/dev/null && rtk --version
 
 # I. RTK hook
 jq '.hooks.PreToolUse // empty' ~/.claude/settings.json 2>/dev/null | grep -q 'rtk' && echo "RTK hook registered" || echo "RTK hook not registered"
+
+# J. Playwright MCP (로컬 QA, 선택)
+jq '.mcpServers.playwright // empty' ~/.claude.json 2>/dev/null
 ```
 
 진단 결과를 **체크리스트 형식**으로 사용자에게 출력:
@@ -57,6 +60,7 @@ jq '.hooks.PreToolUse // empty' ~/.claude/settings.json 2>/dev/null | grep -q 'r
 ❌ GCP CLI — 인증 안 됨 → 7단계에서 설정 (Cloud Storage 중심)
 ❌ Slack MCP — 미등록 → 8단계에서 설정 (AWS 선행 필수)
 ❌ RTK — 미설치 → 9단계에서 설정 (토큰 60~90% 절감)
+❌ Playwright MCP — 미등록 → 10단계에서 설정 (로컬 QA 자동화)
 ```
 
 - ✅ 항목은 **건너뛰기**
@@ -290,7 +294,42 @@ RTK(Rust Token Killer)는 Bash 명령 출력을 자동 압축해 **토큰 소비
 
 > **참고**: RTK 는 Claude Code 내장 도구(`Read`, `Grep`, `Glob`)에는 영향 없음 — `Bash` 도구 셸 명령에만 적용. 제거: `rtk init -g --uninstall && brew uninstall rtk`. 리포: https://github.com/rtk-ai/rtk
 
-### 10. 최종 점검
+### 10. Playwright MCP (선택, 로컬 QA 자동화)
+프론트 QA/E2E 시나리오를 Claude 가 브라우저를 직접 조작하며 수행할 때 사용. `qa-tester` 에이전트와 tmux 를 조합하면 장기 세션(백엔드/프론트 로그 동시 관찰 + Playwright 실행)을 유지할 수 있다.
+
+**전제 조건**: 없음 (독립)
+
+1. MCP 등록:
+   ```bash
+   claude mcp add playwright -- npx -y @playwright/mcp@latest
+   ```
+   `claude mcp add` 명령이 내부적으로 `~/.claude.json` 의 `mcpServers.playwright` 키에 병합한다 (통째 덮어쓰기 아님).
+
+2. Chromium 사전 다운로드 (첫 실행 타임아웃 방지):
+   ```bash
+   # 1회 실행 — 브라우저 번들 다운로드
+   npx -y @playwright/mcp@latest --help
+   ```
+   용량이 커서(~200MB) 첫 실행 시 수십 초 걸림. Claude Code 가 MCP 시작 시점에 타임아웃 내리는 것을 막기 위해 미리 받아둔다.
+
+3. 등록 확인:
+   ```bash
+   claude mcp list | grep playwright
+   ```
+   `playwright: ✓ Connected` 이 보여야 정상.
+
+4. **사용 패턴** — 로컬 QA 흐름
+   - 별도 터미널에서 대상 서비스 기동 (예: `make dev`) — **tmux 권장**
+   - Claude Code 에서 `/oh-my-claudecode:qa-tester` 에이전트에 시나리오 위임
+   - 에이전트가 Playwright MCP 로 브라우저 조작 + 스크린샷/콘솔 로그 수집
+   - 발견된 버그는 Jira DCTC 카드 생성 (또는 기존 카드 댓글) 로 연결
+
+> **주의 사항**
+> - Playwright MCP 는 `localhost` 접근에 제약 없음 — 내부 개발 서버 테스트 적합
+> - 배포된 스테이징/프로덕션을 자동 조작할 때는 팀 합의 필수 (의도치 않은 mutation 방지)
+> - MCP 비활성화: `claude mcp remove playwright` — 필요할 때만 활성화해도 됨 (컨텍스트 절약)
+
+### 11. 최종 점검
 - `claude mcp list` 로 MCP 연결 상태 확인 (값은 출력되지 않음)
   - `mcp-atlassian: ✓ Connected` 필수
   - (Slack 설정 시) `slack: ✓ Connected`
@@ -301,6 +340,7 @@ RTK(Rust Token Killer)는 Bash 명령 출력을 자동 압축해 **토큰 소비
 - (GCP 설정 시) `gcloud auth list` + `gcloud config get-value project` + `gcloud storage buckets list --limit=5` 로 확인
 - (Slack 설정 시) `/dct-slack U<본인ID> 온보딩 테스트` 로 DM 스모크 테스트
 - (RTK 설정 시) `rtk --version` + `rtk init --show` 로 hook 등록 확인
+- (Playwright MCP 설정 시) `claude mcp list | grep playwright` 로 `✓ Connected` 확인
 - `~/.claude/CLAUDE.md` 와 `~/.claude/rules/` 존재 확인
 - 백업 파일 위치 안내 (복원 필요 시):
   - `cp ~/.claude.json.bak-<timestamp> ~/.claude.json`

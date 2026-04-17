@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.5.0 (2026-04-16)
+
+### Added
+- **`/dct` 온보딩 Step 10 — Playwright MCP (선택)** — 로컬 QA/E2E 자동화용 브라우저 조작 MCP
+  - `claude mcp add playwright -- npx -y @playwright/mcp@latest` 한 줄 설치
+  - Chromium 사전 다운로드 가이드 (첫 실행 타임아웃 방지)
+  - `qa-tester` 에이전트 + tmux 조합 사용 패턴 안내
+  - 스테이징/프로덕션 자동 조작 시 주의사항
+- 환경 진단(Step 0) 에 Playwright MCP 체크 항목 추가
+
+### Changed
+- `/dct` 최종 점검(Step 10) 을 Step 11 로 재번호
+- 최종 점검 체크리스트에 Playwright MCP 연결 확인 추가
+
 ## 0.4.0 (2026-04-16)
 
 ### Added
