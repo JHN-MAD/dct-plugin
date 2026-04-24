@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.6.0 (2026-04-21)
+
+### Changed
+- **`/dct-complete` · `/dct-job` Phase E — PR 생성 순서 재편**: 완료 댓글을 먼저 올리고 PR 링크만 따로 추가 댓글로 남기던 흐름을 폐기. **PR 생성 → PR URL 을 포함한 단일 완료 댓글** 순서로 통합. 댓글 포맷에 `## PR` 섹션 필수
+- **PR 생성 전 병합 상태 확인 추가**: `gh pr list --head <branch> --state all` 로 기존 PR 상태를 먼저 조회. OPEN PR 이 이미 있으면 재사용, MERGED 상태에서 추가 커밋이 있으면 `(follow-up)` 표기로 **신규 PR**, 추가 커밋이 없으면 생성 건너뜀
+- **재작업 시 덮어쓰기 금지 정책**:
+  - Jira description 에 `📋 작업 플랜` 마커가 있으면 → 기존 원문 보존 + `## 🔁 추가 플랜 (YYYY-MM-DD, KST)` 섹션으로 **이어붙이기**
+  - Jira 완료 댓글에 `✅ 작업 완료 요약` 마커가 있으면 → `jira_edit_comment` 로 **이어붙이기** (기존 원문 + `## 🔁 추가 작업 (YYYY-MM-DD, KST)` 섹션). **신규 댓글 생성 금지**
+- `skills/dct-jira-workflow/SKILL.md` Phase 3/6 에 동일 정책 반영
+- README / TEAM-GUIDE 한 줄 설명을 새 순서로 갱신
+
 ## 0.5.0 (2026-04-16)
 
 ### Added

@@ -42,12 +42,86 @@ Jira 카드 작업을 **마무리**하는 커맨드. 작업 결과를 요약해 
 - 커밋 로그, 변경 파일, 규모를 바탕으로 요약 초안 작성
 - 사용자에게 요약 미리보기 제시 → 승인/수정
 
-### 4. Jira 완료 댓글 등록
-- **댓글에 표가 포함되면** `jira-adf-table` 스킬로 ADF 변환 후 등록 (컬럼 너비가 내용 비례로 자동 배분). 표가 없으면 markdown 그대로
-- `mcp__mcp-atlassian__jira_add_comment` 로 등록 (ADF dict 거부 시 curl Jira REST v3 fallback — 스킬 참조)
-- 댓글 포맷:
+### 4. PR 생성 여부 확인 (Jira 댓글보다 **먼저** 수행)
+> 💡 PR URL 을 Jira 완료 댓글 본문에 포함해야 하므로, PR 생성을 **반드시 Step 5 앞에** 수행한다. 댓글 먼저 달고 PR 링크만 추가 댓글로 남기는 방식은 금지.
+
+사용자에게 물어봄:
+```
+PR을 생성할까요? (y/N)
+```
+
+**y 인 경우**:
+- 브랜치가 아직 원격에 없으면 `git push -u origin feature/DCTC-<번호>` (원격 없으면 `fork` 또는 `origin` 사용)
+- **기존 PR 상태 확인 (중복/재생성 방지)** — `gh pr create` 전 반드시 수행:
+  ```bash
+  gh pr list --head "$(git branch --show-current)" \
+    --state all --json number,state,url,mergeCommit \
+    --limit 5
+  ```
+  판정:
+  - **OPEN PR 이 이미 존재** → 신규 생성 금지. 해당 PR URL 을 재사용하고 "기존 PR 재활용" 안내. (필요하면 `gh pr edit` 으로 설명 업데이트만)
+  - **MERGED PR 만 존재** + **병합 이후 신규 커밋 있음** (`git log <mergeCommit>..HEAD --oneline` 에 결과 있음) → **신규 PR 생성**. 사용자에게 "이전 PR 은 이미 병합됨. 추가 작업분으로 신규 PR 을 올립니다" 고지.
+  - **MERGED PR 만 존재** + **추가 커밋 없음** → PR 생성할 내용이 없음. 사용자에게 "병합 이후 신규 커밋 없음" 보고하고 PR 생성 건너뜀 → Step 5 의 `## PR` 섹션에 기존 병합 PR URL 을 `🔗 <merged pr url> (이미 병합됨)` 으로 기재.
+  - **PR 이력 없음** → 아래 신규 PR 생성 흐름 진행.
+- **베이스 브랜치 결정 (team-workflow 규칙):**
+  - `git ls-remote --heads origin dev` 로 `dev` 존재 여부 확인
+  - **존재** → `--base dev` 사용
+  - **없음** → 사용자에게 "dev 브랜치가 없습니다. 어느 브랜치로 PR을 올릴까요?" 문의
+  - **절대 `main` 으로 자동 선택하지 말 것** (🚨 main 직접 PR 금지)
+- `gh pr create --base <결정된 브랜치>` 실행:
+  - **제목**: `[DCTC-<번호>] <작업 요약 한 줄>` (이전 병합 건의 후속이면 `[DCTC-<번호>] ... (follow-up)` 권장)
+  - **본문**: Jira 카드 링크 + 변경 요약 + 테스트 플랜 체크리스트 + (follow-up 인 경우 이전 병합 PR 링크)
+  - **리뷰어**: 사용자에게 확인 후 지정 (기본값 없음 — 프롬프트로 요청)
+- 생성된 **PR URL 을 변수에 보관** → Step 5 댓글 본문에 삽입
+
+**N 인 경우**:
+- PR 생성 건너뜀, Step 5 댓글 본문의 `## PR` 섹션은 `생성 안 함` 으로 기재
+
+### 5. Jira 완료 댓글 등록/수정 (PR URL 포함)
+> 💡 **이미 완료 댓글이 있으면 신규 작성 금지 → 기존 댓글을 수정해 이어붙인다.** 카드가 여러 번 재작업될 때 댓글이 쌓이지 않도록 유지.
+
+#### 5-1. 기존 완료 댓글 탐지
+- `mcp__mcp-atlassian__jira_get_issue(issue_key=DCTC-<번호>, fields="comment")` 로 전체 댓글 조회
+- 본문 첫 줄이 `✅ 작업 완료 요약` 으로 시작하는 **가장 최신** 댓글을 "기존 완료 댓글" 로 식별 (작성자 필터는 하지 않음 — 누가 작성했든 해당 마커면 대상)
+- 발견된 댓글의 `id` 와 원문을 보관
+
+#### 5-2. 분기 처리
+**기존 완료 댓글이 있는 경우 → 수정(append)**
+- `mcp__mcp-atlassian__jira_edit_comment(issue_key, comment_id, comment=<새 본문>)` 로 교체
+- 새 본문 = 기존 원문 + 구분선 + 이번 이어붙임 섹션:
+  ```
+  <기존 원문 그대로>
+
+  ---
+
+  ## 🔁 추가 작업 (YYYY-MM-DD)
+
+  ## PR
+  🔗 <pr url>   (또는: 생성 안 함 / 이미 병합됨)
+
+  ## 변경사항
+  - ...
+
+  ## 수정 파일
+  - ...
+
+  ## 검증
+  - ...
+
+  ## 후속 작업
+  - (있으면 기재)
+  ```
+- 날짜는 **Asia/Seoul (KST)** 기준 `YYYY-MM-DD`
+- 표가 포함되면 `jira-adf-table` 스킬로 ADF 변환. ADF 교체가 거부되면 curl Jira REST v3 fallback (`PUT /rest/api/3/issue/{key}/comment/{id}`)
+
+**기존 완료 댓글이 없는 경우 → 신규 작성**
+- `mcp__mcp-atlassian__jira_add_comment` 로 **단일 댓글** 등록 (표 있으면 `jira-adf-table` ADF 변환, 거부 시 curl fallback)
+- 댓글 포맷 (PR 섹션 필수 — Step 4 에서 확보한 URL 또는 `생성 안 함`):
   ```
   ✅ 작업 완료 요약
+
+  ## PR
+  🔗 <pr url>   (또는: 생성 안 함 / 이미 병합됨)
 
   ## 변경사항
   - ...
@@ -64,33 +138,14 @@ Jira 카드 작업을 **마무리**하는 커맨드. 작업 결과를 요약해 
   - (있으면 기재)
   ```
 
-### 5. PR 생성 여부 확인
-사용자에게 물어봄:
-```
-PR을 생성할까요? (y/N)
-```
-
-**y 인 경우**:
-- 브랜치가 아직 원격에 없으면 `git push -u origin feature/DCTC-<번호>` (원격 없으면 `fork` 또는 `origin` 사용)
-- **베이스 브랜치 결정 (team-workflow 규칙):**
-  - `git ls-remote --heads origin dev` 로 `dev` 존재 여부 확인
-  - **존재** → `--base dev` 사용
-  - **없음** → 사용자에게 "dev 브랜치가 없습니다. 어느 브랜치로 PR을 올릴까요?" 문의
-  - **절대 `main` 으로 자동 선택하지 말 것** (🚨 main 직접 PR 금지)
-- `gh pr create --base <결정된 브랜치>` 실행:
-  - **제목**: `[DCTC-<번호>] <작업 요약 한 줄>`
-  - **본문**: Jira 카드 링크 + 변경 요약 + 테스트 플랜 체크리스트
-  - **리뷰어**: 사용자에게 확인 후 지정 (기본값 없음 — 프롬프트로 요청)
-- 생성된 PR URL 을 Jira 카드에 추가 댓글로 등록 (`🔗 PR: <url>`)
-
-**N 인 경우**:
-- PR 생성 건너뜀, Jira 댓글만 남기고 종료
+- **PR URL 만 따로 추가 댓글로 남기지 말 것** — 본 댓글의 `## PR` 섹션에 통합
+- **새 댓글을 여러 개 만들지 말 것** — 재작업 시 기존 완료 댓글 수정
 
 ### 6. 종료 메시지
 ```
 ✅ DCTC-<번호> 마무리 완료
-- Jira 댓글: <comment link>
 - PR: <pr url> (또는 "생성 안 함")
+- Jira 댓글: <comment link>   ← PR URL 포함된 단일 완료 댓글
 ```
 
 ## 규칙 준수

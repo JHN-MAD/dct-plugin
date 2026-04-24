@@ -47,10 +47,38 @@ Jira 카드 기반 작업을 **시작**하는 커맨드. 플랜 작성과 브랜
 - 목표, 단계(step-by-step), 예상 영향 파일, 검증 방법 포함
 - 사용자에게 **플랜 미리보기** 제시 → 승인 받기
 
-### 4. Jira 업로드
-- 승인된 플랜을 Jira 카드의 **description(설명) 필드**에 기록 (기존 설명이 있으면 병합 또는 사용자 확인 후 갱신)
-- **플랜에 표가 포함되면** `jira-adf-table` 스킬로 ADF 변환 (컬럼 너비가 내용 길이에 비례하도록 colwidth 자동 계산). 표가 없으면 markdown 그대로 전달
-- 도구: `mcp__mcp-atlassian__jira_update_issue` (`fields.description` 업데이트)
+### 4. Jira 업로드 (기존 플랜 있으면 이어붙이기)
+> 💡 **이미 `📋 작업 플랜` 섹션이 description 에 있으면 신규 작성/덮어쓰기 금지 → 기존 description 을 유지한 채 이어붙인다.** 카드가 여러 번 재작업될 때 플랜 이력이 사라지지 않도록 한다.
+
+#### 4-1. 기존 description 탐지
+- `jira_get_issue(issue_key=DCTC-<번호>, fields="description")` 로 현재 description 원문 조회 (Step 1 결과 재사용 가능)
+- 본문에 `📋 작업 플랜` 마커가 포함되어 있는지 확인
+
+#### 4-2. 분기 처리
+**기존 플랜이 있는 경우 → 이어붙이기(append)**
+- 새 description = 기존 원문 + 구분선 + 이번 이어붙임 섹션:
+  ```
+  <기존 원문 그대로>
+
+  ---
+
+  ## 🔁 추가 플랜 (YYYY-MM-DD)
+
+  ## 목표
+  ...
+
+  ## 단계
+  1. ...
+
+  ## 예상 영향 파일
+  - ...
+
+  ## 검증
+  - ...
+  ```
+- 날짜는 **Asia/Seoul (KST)** 기준 `YYYY-MM-DD`
+
+**기존 플랜이 없는 경우 → 신규 작성**
 - description 포맷 (Markdown):
   ```
   📋 작업 플랜 (by Claude Code)
@@ -68,6 +96,10 @@ Jira 카드 기반 작업을 **시작**하는 커맨드. 플랜 작성과 브랜
   ## 검증
   - ...
   ```
+
+#### 4-3. 업로드
+- **표가 포함되면** `jira-adf-table` 스킬로 ADF 변환 (컬럼 너비 내용 비례 자동 계산). 표 없으면 markdown 그대로
+- 도구: `mcp__mcp-atlassian__jira_update_issue` (`fields.description`) — ADF dict 거부 시 curl Jira REST v3 fallback
 
 ### 5. 브랜치 진입
 - 부모 브랜치 결정 (`dev` 우선, 없으면 기본 브랜치)

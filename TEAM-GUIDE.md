@@ -58,7 +58,7 @@ claude --plugin ~/dct-plugin
 # (자유) 직접 코딩, /autopilot, /ultrawork 등 무엇이든
 
 /dct-complete DCTC-1808
-# → 결과 요약, Jira 완료 댓글, PR 생성(확인 후)
+# → 결과 요약 → PR 생성(확인 후) → PR URL 포함한 Jira 완료 댓글
 ```
 
 ### Jira 카드 작업 — 완전 자동화

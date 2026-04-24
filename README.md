@@ -17,7 +17,7 @@
 |--------|------|
 | `/dct` | 신규 팀원 온보딩 — Atlassian MCP 설정, SSH 키, `gh auth login`, 팀 CLAUDE.md/rules 배포 (Slack/AWS 선택) |
 | `/dct-plan <DCTC-번호> [설명]` | 플랜 작성 → Jira 업로드 → `feature/DCTC-N` 브랜치 진입 (구현은 자유) |
-| `/dct-complete <DCTC-번호>` | 결과 요약 → Jira 완료 댓글 → PR 생성 (사용자 확인 후) |
+| `/dct-complete <DCTC-번호>` | 결과 요약 → PR 생성(사용자 확인 후) → PR URL 포함한 Jira 완료 댓글 |
 | `/dct-job <DCTC-번호> <타입> <설명>` | 플랜→구현→검증→PR 완전 자동화 파이프라인 |
 | `/dct-slack <ID\|이름> <메시지>` | **본인 계정**으로 Slack 메시지 전송 (korotovsky, xoxc/xoxd) |
 | `/dct-slack-bot <ID\|이름> <메시지>` | 봇 `@매도비` 로 Slack 메시지 전송 (server-slack, xoxb) |
@@ -92,7 +92,7 @@ Claude Code 내에서:
 /dct-plan DCTC-1808 "설명"      # 1. 플랜 + Jira 업로드 + 브랜치 진입
 /ultrawork  또는  /autopilot    # 2. 구현 (병렬 / 자율 — 상황에 맞게)
 /review                         # 3. Claude Code 내장 리뷰
-/dct-complete DCTC-1808         # 4. Jira 완료 댓글 + PR 생성
+/dct-complete DCTC-1808         # 4. PR 생성 → PR URL 포함한 Jira 완료 댓글
 ```
 
 ## MCP 설정
