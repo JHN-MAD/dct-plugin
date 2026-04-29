@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.7.0 (2026-04-29)
+
+### Changed
+- **완료 댓글 컴팩트 포맷** — Jira-Slack 연동 채널 노이즈를 줄이기 위해 완료 댓글을 3~4줄로 축소. 신규 포맷 `✅ DCTC-<번호> 완료 — <한 줄 요약>` + `🔗 PR: <url>` + (선택) `후속:`. 변경 파일·검증 결과·표는 댓글에서 제거 (PR 본문/Jira description 으로 일원화)
+- **이어붙이기 블록도 짧게** — `🔁 추가 작업 (YYYY-MM-DD)` + `✅ 한 줄 요약` + `🔗 PR` + 후속(선택), 헤더 남발 금지
+- **마커 호환성** — 기존 댓글 탐지 시 신규 마커(`✅ DCTC-`)와 구버전 마커(`✅ 작업 완료 요약`) 모두 인식
+- description(플랜) 포맷은 자세함 유지 — 본 변경은 댓글에만 한정
+
+### Files
+- `commands/dct-complete.md` Step 5 — 컴팩트 포맷으로 재작성
+- `commands/dct-job.md` Phase E.4 — 동일 포맷 반영
+- `skills/dct-jira-workflow/SKILL.md` Phase 6 — 동일 포맷 반영
+
 ## 0.6.0 (2026-04-21)
 
 ### Changed
