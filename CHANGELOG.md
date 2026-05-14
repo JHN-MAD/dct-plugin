@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.8.0 (2026-05-15)
+
+### Changed
+- **완료 댓글에 PR 요약 추가** — 0.7.0 컴팩트 포맷이 Jira-Slack 연동 채널에서 "무엇이 변경됐는지" 즉시 파악 안 된다는 피드백 반영. 한 줄 요약 + PR URL 유지하면서 `📝 변경 요약` bullet 3~5개와 (선택) `📂 영향 범위` 섹션을 추가해 **PR 본문 클릭 없이 채널에서 컨텍스트 전달** 가능하게 함
+- **일관 포맷 강제** — 마커·순서 고정 (`✅` → `🔗` → `📝` → `📂` → `후속`). 매번 다른 헤더 쓰지 못하게 명시. 헤더(`##`)·코드 블록·표는 댓글에서 금지 유지
+- **PR 요약 추출 절차 추가** — 댓글 작성 전 `git log <base>..HEAD --oneline` + `git diff --stat` + PR 본문 + Jira description 플랜을 종합해 bullet 생성. 카드 제목 그대로 복붙 금지
+- **이어붙이기 블록도 동일 마커** — `🔁 추가 작업` 블록에도 `📝 변경 요약` 포함 (영향 범위는 선택)
+
+### Files
+- `commands/dct-complete.md` Step 5 — PR 요약 포맷으로 재작성 (5-2 추출 절차 신설)
+- `commands/dct-job.md` Phase E.4 — 동일 포맷 반영
+- `skills/dct-jira-workflow/SKILL.md` Phase 6 — 동일 포맷 반영
+
 ## 0.7.0 (2026-04-29)
 
 ### Changed
